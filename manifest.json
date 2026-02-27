@@ -16,7 +16,15 @@
     },
     {
       "matches": ["https://web.codxis.api.br/sistema/pages/privado/index/*"],
-      "js": ["src/shared/constants.js", "src/shared/api.js", "src/contents/create-referrer.js"],
+      "js": [
+          "src/shared/constants.js",
+          "src/shared/api.js",
+          "src/contents/utils.js",
+          "src/contents/handlers.js",
+          "src/contents/modal.js",
+          "src/contents/menu.js",
+          "src/contents/create-referrer.js"
+        ],
       "css": ["src/css/modal.css"]
     }
   ],
