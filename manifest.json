@@ -11,12 +11,12 @@
       "matches": [
         "https://web.codxis.api.br/sistema/pages/privado/nfce/emissao/pdv/*"
       ],
-      "js": ["src/contents/content.js"],
+      "js": ["src/shared/constants.js", "src/shared/api.js", "src/contents/content.js"],
       "css": ["src/css/custom-select.css"]
     },
     {
       "matches": ["https://web.codxis.api.br/sistema/pages/privado/index/*"],
-      "js": ["src/contents/create-referrer.js"],
+      "js": ["src/shared/constants.js", "src/shared/api.js", "src/contents/create-referrer.js"],
       "css": ["src/css/modal.css"]
     }
   ],

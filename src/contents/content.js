@@ -6,7 +6,6 @@ function createSearchableSelect({
   const container = document.createElement("div");
   container.className = "custom-select-container";
 
-  // ===== Campo fechado =====
   const trigger = document.createElement("div");
   trigger.className = "custom-select-trigger";
 
@@ -21,11 +20,9 @@ function createSearchableSelect({
   trigger.appendChild(triggerText);
   trigger.appendChild(arrow);
 
-  // ===== Dropdown =====
   const dropdown = document.createElement("div");
   dropdown.className = "custom-select-dropdown";
 
-  // ===== Search input =====
   const searchWrapper = document.createElement("div");
   searchWrapper.className = "custom-select-search-wrapper";
 
@@ -36,12 +33,11 @@ function createSearchableSelect({
 
   const searchIcon = document.createElement("span");
   searchIcon.className = "custom-select-search-icon";
-  searchIcon.innerHTML = "🔍";
+  searchIcon.innerHTML = "&#128269;";
 
   searchWrapper.appendChild(searchInput);
   searchWrapper.appendChild(searchIcon);
 
-  // ===== Options list =====
   const list = document.createElement("ul");
   list.className = "custom-select-list";
 
@@ -91,7 +87,6 @@ function createSearchableSelect({
   return container;
 }
 
-// ===== Wrapper com Label =====
 function createFieldWithLabel(labelText, selectElement) {
   const fieldWrapper = document.createElement("div");
   fieldWrapper.className = "custom-field-wrapper";
@@ -106,23 +101,71 @@ function createFieldWithLabel(labelText, selectElement) {
   return fieldWrapper;
 }
 
-const referrers = [
-  { value: 0, label: "" },
-  { value: 1, label: "Diego de Sousa Pereira" },
-  { value: 2, label: "Willian de Sousa Pereira" },
-  { value: 3, label: "Maria Oliveira" },
-];
+function waitForElement(selector, callback, maxAttempts = 10) {
+  let attempts = 0;
+  const interval = setInterval(() => {
+    const element = document.querySelector(selector);
+    if (element) {
+      clearInterval(interval);
+      callback(element);
+    }
+    attempts++;
+    if (attempts >= maxAttempts) {
+      clearInterval(interval);
+    }
+  }, 500);
+}
 
-const select = createSearchableSelect({
-  options: referrers,
-  placeholder: "",
-});
+function initSelectIndicador() {
+  const targetElement = document.getElementById("formNFCe:colaborador");
 
-const field = createFieldWithLabel("Indicador", select);
+  if (!targetElement) return;
 
-const parent = document.getElementById("formNFCe:colaborador").parentElement
-  .parentElement;
+  const parent = targetElement.parentElement.parentElement;
 
-const firstChild = parent.children[0];
+  if (parent.querySelector(".custom-field-wrapper")) return;
 
-parent.insertBefore(field, firstChild.nextSibling);
+  const select = createSearchableSelect({
+    options: [],
+    placeholder: "Selecione um indicador",
+  });
+
+  const field = createFieldWithLabel("Indicador", select);
+
+  const firstChild = parent.children[0];
+  parent.insertBefore(field, firstChild.nextSibling);
+
+  loadIndicadores(select, createSearchableSelect);
+}
+
+async function loadIndicadores(selectElement, createFn) {
+  try {
+    const response = await listarIndicadores();
+
+    if (!response.data || !response.data.length) {
+      return;
+    }
+
+    const options = response.data.map((indicador) => ({
+      value: indicador.id,
+      label: indicador.apelido || indicador.nome,
+    }));
+
+    const newSelect = createFn({
+      options: options,
+      placeholder: "Selecione um indicador",
+    });
+
+    const field = createFieldWithLabel("Indicador", newSelect);
+    const parent = selectElement.parentElement.parentElement;
+    const oldField = parent.querySelector(".custom-field-wrapper");
+    
+    if (oldField) {
+      parent.replaceChild(field, oldField);
+    }
+  } catch (err) {
+    console.error("Erro ao carregar indicadores:", err);
+  }
+}
+
+waitForElement("#formNFCe\\:colaborador", initSelectIndicador);

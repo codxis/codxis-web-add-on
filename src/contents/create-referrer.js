@@ -1,18 +1,7 @@
-// console.log("create referrer....");
-
-// const parent = document.getElementById("menuLateral:j_idt238").parentElement;
-// const secondChild = parent.children[1];
-
-// const field = document.createElement("div");
-// field.innerText = "hello";
-// parent.insertBefore(field, secondChild.nextSibling);
-
 function createCustomMenu() {
-  // ===== Container principal =====
   const wrapper = document.createElement("div");
   wrapper.style.paddingTop = "21px";
 
-  // ===== Título principal (colapsável) =====
   const topic = document.createElement("div");
   topic.className = "title-primary-submenu";
   topic.style.cursor = "pointer";
@@ -33,7 +22,6 @@ function createCustomMenu() {
   header.appendChild(icon);
   topic.appendChild(header);
 
-  // ===== Conteúdo interno =====
   const content = document.createElement("div");
   content.className = "submenu-inside-topics not-show";
 
@@ -59,7 +47,6 @@ function createCustomMenu() {
     createItem("Consultar", () => openCustomModal("Consultar")),
   );
 
-  // ===== Toggle =====
   topic.addEventListener("click", () => {
     content.classList.toggle("not-show");
   });
@@ -85,12 +72,64 @@ function insertMenuAfterParticipante() {
   );
 }
 
+function waitForElement(selector, callback, maxAttempts = 10) {
+  let attempts = 0;
+  const interval = setInterval(() => {
+    const element = document.querySelector(selector);
+    if (element) {
+      clearInterval(interval);
+      callback(element);
+    }
+    attempts++;
+    if (attempts >= maxAttempts) {
+      clearInterval(interval);
+    }
+  }, 500);
+}
+
+function initMenu() {
+  waitForElement("#participante-topic", () => {
+    insertMenuAfterParticipante();
+  });
+}
+
+function validateCPF(cpf) {
+  cpf = cpf.replace(/\D/g, "");
+  
+  if (cpf.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(cpf)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cpf[i]) * (10 - i);
+  }
+  let digit1 = 11 - (sum % 11);
+  if (digit1 > 9) digit1 = 0;
+  if (digit1 !== parseInt(cpf[9])) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cpf[i]) * (11 - i);
+  }
+  let digit2 = 11 - (sum % 11);
+  if (digit2 > 9) digit2 = 0;
+  if (digit2 !== parseInt(cpf[10])) return false;
+
+  return true;
+}
+
+function formatCPF(cpf) {
+  return cpf
+    .replace(/\D/g, "")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
 function renderCadastroForm() {
   return `
     <div class="row" id="cadastro-indicadores">
-      
       <div class="form-body">
-
         <div class="col-12 subtitle-divider-margin">
           <h1 class="subtitle">Cadastro de Indicador</h1>
           <div class="subtitle-divider"></div>
@@ -113,6 +152,7 @@ function renderCadastroForm() {
             id="cpf" 
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="14"
+            placeholder="000.000.000-00"
           />
         </div>
 
@@ -124,55 +164,35 @@ function renderCadastroForm() {
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
-
       </div>
+
+      <div id="cadastro-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
         <button 
+          id="btnSalvar"
           class="ui-button ui-widget ui-state-default ui-corner-all"
-          onclick="handleCadastro()"
         >
           Salvar
         </button>
       </div>
-
     </div>
   `;
 }
 
-// Aguarda render do JSF
-setTimeout(insertMenuAfterParticipante, 1000);
-
 function createModal() {
   const overlay = document.createElement("div");
   overlay.id = "custom-modal-overlay";
-  overlay.style.position = "fixed";
-  overlay.style.top = "0";
-  overlay.style.left = "0";
-  overlay.style.width = "100%";
-  overlay.style.height = "100%";
-  overlay.style.background = "rgba(0,0,0,0.4)";
-  overlay.style.display = "none";
-  overlay.style.justifyContent = "center";
-  overlay.style.alignItems = "center";
-  overlay.style.zIndex = "9999";
 
   const modal = document.createElement("div");
-  modal.style.background = "#fff";
-  modal.style.padding = "20px";
-  modal.style.borderRadius = "8px";
-  modal.style.minWidth = "400px";
-  modal.style.position = "relative";
+  modal.id = "custom-modal";
 
   const closeBtn = document.createElement("button");
+  closeBtn.className = "modal-close";
   closeBtn.textContent = "X";
-  closeBtn.style.position = "absolute";
-  closeBtn.style.top = "10px";
-  closeBtn.style.right = "10px";
-  closeBtn.style.cursor = "pointer";
 
   closeBtn.addEventListener("click", () => {
-    overlay.style.display = "none";
+    overlay.classList.remove("active");
   });
 
   const content = document.createElement("div");
@@ -184,7 +204,7 @@ function createModal() {
 
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) {
-      overlay.style.display = "none";
+      overlay.classList.remove("active");
     }
   });
 
@@ -195,21 +215,27 @@ function openCustomModal(type) {
   const overlay = document.getElementById("custom-modal-overlay");
   const content = document.getElementById("custom-modal-content");
 
-  content.innerHTML = ""; // limpa conteúdo anterior
+  content.innerHTML = "";
 
   if (type === "Cadastrar") {
     content.innerHTML = renderCadastroForm();
 
-    // document
-    //   .getElementById("btnSalvar")
-    //   .addEventListener("click", handleCadastro);
+    const btnSalvar = document.getElementById("btnSalvar");
+    btnSalvar.addEventListener("click", handleCadastro);
+    
+    const cpfInput = document.getElementById("cpf");
+    cpfInput.addEventListener("input", (e) => {
+      e.target.value = formatCPF(e.target.value);
+    });
   }
 
   if (type === "Consultar") {
     content.innerHTML = `
       <h2>Consultar Indicadores</h2>
-      <button id="btnCarregar">Carregar Lista</button>
-      <ul id="lista-indicadores" style="margin-top:15px;"></ul>
+      <button id="btnCarregar" class="ui-button ui-widget ui-state-default ui-corner-all">
+        Carregar Lista
+      </button>
+      <ul id="lista-indicadores" style="margin-top: 15px;"></ul>
     `;
 
     document
@@ -217,73 +243,61 @@ function openCustomModal(type) {
       .addEventListener("click", carregarLista);
   }
 
-  overlay.style.display = "flex";
+  overlay.classList.add("active");
 }
 
-createModal();
-
-const API_BASE =
-  "https://iofeislqynfuerypxrpt.supabase.co/functions/v1/indicadores-api";
-
-const API_KEY = "codxistop123";
-// const TOKEN = "SEU_JWT_AQUI"; // se usar bearer
-
-async function apiFetch(endpoint, options = {}) {
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-      ...options.headers,
-    },
-    ...options,
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error);
+function showError(message) {
+  const errorDiv = document.getElementById("cadastro-error");
+  if (errorDiv) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = "block";
   }
-
-  return response.json();
 }
 
-async function cadastrarIndicador(dados) {
-  return apiFetch("/", {
-    method: "POST",
-    body: JSON.stringify(dados),
-  });
+function hideError() {
+  const errorDiv = document.getElementById("cadastro-error");
+  if (errorDiv) {
+    errorDiv.style.display = "none";
+  }
 }
 
 async function handleCadastro() {
   const nome = document.getElementById("nome").value.trim();
-  const cpf = document.getElementById("cpf").value.trim();
+  const cpfInput = document.getElementById("cpf");
+  const cpf = cpfInput.value.trim();
   const apelido = document.getElementById("apelido").value.trim();
 
+  hideError();
+
   if (!nome || !cpf) {
-    alert("Nome e CPF são obrigatórios.");
+    showError("Nome e CPF são obrigatórios.");
     return;
   }
 
-  try {
-    const btn = document.getElementById("btnSalvar");
-    btn.disabled = true;
-    btn.textContent = "Salvando...";
+  const cpfDigits = cpf.replace(/\D/g, "");
+  if (!validateCPF(cpfDigits)) {
+    showError("CPF inválido.");
+    return;
+  }
 
-    await cadastrarIndicador({ nome, cpf, apelido });
+  const btn = document.getElementById("btnSalvar");
+  btn.disabled = true;
+  btn.classList.add("btn-loading");
+  btn.textContent = "Salvando...";
+
+  try {
+    await cadastrarIndicador({ nome, cpf: cpfDigits, apelido });
 
     alert("Indicador cadastrado com sucesso!");
 
-    document.getElementById("custom-modal-overlay").style.display = "none";
+    document.getElementById("custom-modal-overlay").classList.remove("active");
   } catch (err) {
-    alert("Erro ao cadastrar: " + err.message);
+    showError("Erro ao cadastrar: " + err.message);
   } finally {
-    const btn = document.getElementById("btnSalvar");
     btn.disabled = false;
+    btn.classList.remove("btn-loading");
     btn.textContent = "Salvar";
   }
-}
-
-async function listarIndicadores() {
-  return apiFetch("/");
 }
 
 async function carregarLista() {
@@ -295,7 +309,7 @@ async function carregarLista() {
 
     lista.innerHTML = "";
 
-    if (!response.data.length) {
+    if (!response.data || !response.data.length) {
       lista.innerHTML = "<li>Nenhum indicador encontrado</li>";
       return;
     }
@@ -305,8 +319,7 @@ async function carregarLista() {
       li.style.padding = "6px 0";
       li.innerHTML = `
         <strong>${indicador.nome}</strong><br/>
-        CPF: ${indicador.cpf}<br/>
-        Pontos: ${indicador.pontos}
+        CPF: ${formatCPF(indicador.cpf)}
       `;
       lista.appendChild(li);
     });
@@ -314,3 +327,6 @@ async function carregarLista() {
     lista.innerHTML = "<li>Erro ao buscar indicadores</li>";
   }
 }
+
+createModal();
+initMenu();
