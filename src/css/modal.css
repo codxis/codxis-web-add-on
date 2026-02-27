@@ -97,3 +97,267 @@
   height: 42px;
   font-weight: 500;
 }
+
+/* ========================
+   Consulta de Indicadores
+   ======================== */
+
+#consultar-indicadores {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#consultar-indicadores input,
+#consultar-indicadores select {
+  border: 1px solid #282e3f;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Filtros */
+.filtros-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.filtros-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filtro-item {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filtro-item label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.filtros-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.filtros-actions button {
+  min-width: 120px;
+  height: 36px;
+}
+
+/* Tabela */
+.tabela-container {
+  overflow-x: auto;
+}
+
+.indicadores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.indicadores-table th {
+  background: #282e3f;
+  color: #fff;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.indicadores-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.indicadores-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.indicadores-table tbody tr:hover {
+  background: #e9ecef;
+}
+
+.indicadores-table .empty-row td,
+.indicadores-table .loading-row td,
+.indicadores-table .error-row td {
+  text-align: center;
+  color: #666;
+  padding: 30px 8px;
+}
+
+.indicador-nome {
+  font-weight: 500;
+}
+
+.indicador-nome small {
+  color: #666;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* Dropdown de Ações */
+.acoes-dropdown {
+  position: relative;
+}
+
+.acoes-btn {
+  background: #282e3f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.acoes-btn:hover {
+  background: #3d4556;
+}
+
+.acoes-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 160px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.acoes-menu.show {
+  display: block;
+}
+
+.acao-item {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.acao-item:hover {
+  background: #f0f0f0;
+}
+
+.acao-item.acao-excluir {
+  color: #dc3545;
+}
+
+.acao-item.acao-excluir:hover {
+  background: #ffe6e6;
+}
+
+/* ========================
+   Editar Indicador
+   ======================== */
+
+#editar-indicador input,
+#adicionar-pontos input {
+  border: 1px solid #282e3f;
+  border-radius: 6px;
+  width: 100%;
+}
+
+#editar-indicador .form-footer,
+#adicionar-pontos .form-footer,
+#excluir-indicador .form-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+
+#editar-indicador .form-footer button,
+#adicionar-pontos .form-footer button,
+#excluir-indicador .form-footer button {
+  min-width: 100px;
+  height: 38px;
+}
+
+/* ========================
+   Adicionar Pontos
+   ======================== */
+
+.pontos-info {
+  margin-top: 10px;
+  padding: 10px;
+  background: #e7f3ff;
+  border-radius: 4px;
+  color: #0066cc;
+  font-size: 13px;
+}
+
+/* ========================
+   Excluir Indicador
+   ======================== */
+
+.confirm-message {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.confirm-message p {
+  margin: 8px 0;
+}
+
+.warning-text {
+  color: #dc3545;
+  font-size: 13px;
+}
+
+.ui-button-danger {
+  background: #dc3545 !important;
+  color: #fff !important;
+}
+
+.ui-button-danger:hover {
+  background: #c82333 !important;
+}
+
+/* ========================
+   Responsivo
+   ======================== */
+
+@media (max-width: 768px) {
+  #custom-modal {
+    min-width: 300px;
+    max-width: 95vw;
+  }
+
+  .filtros-row {
+    flex-direction: column;
+  }
+
+  .filtro-item {
+    min-width: 100%;
+  }
+
+  .indicadores-table {
+    font-size: 12px;
+  }
+
+  .indicadores-table th,
+  .indicadores-table td {
+    padding: 8px 4px;
+  }
+}

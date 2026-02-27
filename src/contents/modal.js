@@ -35,7 +35,7 @@ function renderCadastroForm() {
       <div class="form-body">
         <div class="col-12 subtitle-divider-margin">
           <h1 class="subtitle">Cadastro de Indicador</h1>
-          <div class="subtitle-divider"></div>
+         subtitle-divider"> <div class="</div>
         </div>
 
         <div class="col-12 col-md-12">
@@ -83,7 +83,246 @@ function renderCadastroForm() {
   `;
 }
 
-function openCustomModal(type) {
+function renderConsultarForm() {
+  return `
+    <div id="consultar-indicadores">
+      <div class="col-12 subtitle-divider-margin">
+        <h1 class="subtitle">Consulta de Indicadores</h1>
+        <div class="subtitle-divider"></div>
+      </div>
+
+      <div class="filtros-container">
+        <div class="filtros-row">
+          <div class="filtro-item">
+            <label class="form-label">Nome</label>
+            <input 
+              type="text" 
+              id="filtro-nome" 
+              class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+              placeholder="Filtrar por nome"
+            />
+          </div>
+          <div class="filtro-item">
+            <label class="form-label">CPF</label>
+            <input 
+              type="text" 
+              id="filtro-cpf" 
+              class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+              placeholder="000.000.000-00"
+              maxlength="14"
+            />
+          </div>
+          <div class="filtro-item">
+            <label class="form-label">Apelido</label>
+            <input 
+              type="text" 
+              id="filtro-apelido" 
+              class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+              placeholder="Filtrar por apelido"
+            />
+          </div>
+        </div>
+        <div class="filtros-row">
+          <div class="filtro-item">
+            <label class="form-label">Pontos Mín</label>
+            <input 
+              type="number" 
+              id="filtro-pontos-min" 
+              class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+              placeholder="0"
+              min="0"
+            />
+          </div>
+          <div class="filtro-item">
+            <label class="form-label">Pontos Máx</label>
+            <input 
+              type="number" 
+              id="filtro-pontos-max" 
+              class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+              placeholder="999999"
+              min="0"
+            />
+          </div>
+          <div class="filtro-item">
+            <label class="form-label">Ativo</label>
+            <select id="filtro-ativo" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input">
+              <option value="">Todos</option>
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </div>
+        </div>
+        <div class="filtros-actions">
+          <button 
+            id="btnConsultar" 
+            class="ui-button ui-widget ui-state-default ui-corner-all"
+          >
+            Consultar
+          </button>
+        </div>
+      </div>
+
+      <div id="consulta-error" class="error-message" style="display: none;"></div>
+
+      <div class="tabela-container">
+        <table id="tabela-indicadores" class="indicadores-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Pontos</th>
+              <th>Valor (R$)</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-corpo">
+            <tr class="empty-row">
+              <td colspan="4">Nenhum indicador encontrado. Realize uma consulta.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderEditarForm(indicador) {
+  return `
+    <div id="editar-indicador">
+      <div class="col-12 subtitle-divider-margin">
+        <h1 class="subtitle">Editar Indicador</h1>
+        <div class="subtitle-divider"></div>
+      </div>
+
+      <div class="form-body">
+        <div class="col-12 col-md-12">
+          <label class="form-label">Nome*</label>
+          <input 
+            type="text" 
+            id="edit-nome" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            maxlength="150"
+            value="${window.formatCPF(indicador.cpf || '')}"
+          />
+        </div>
+      </div>
+
+      <div id="edit-error" class="error-message" style="display: none;"></div>
+
+      <div class="form-footer">
+        <button 
+          id="btnCancelarEditar"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          style="margin-right: 10px;"
+        >
+          Cancelar
+        </button>
+        <button 
+          id="btnSalvarEditar"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          data-id="${indicador.id}"
+        >
+          Salvar
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdicionarPontosForm(indicador) {
+  return `
+    <div id="adicionar-pontos">
+      <div class="col-12 subtitle-divider-margin">
+        <h1 class="subtitle">Adicionar Pontos - ${indicador.nome}</h1>
+        <div class="subtitle-divider"></div>
+      </div>
+
+      <div class="form-body">
+        <div class="col-12 col-md-12">
+          <label class="form-label">Valor da Venda (R$)*</label>
+          <input 
+            type="number" 
+            id="pontos-valor" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            placeholder="0,00"
+            min="0.01"
+            step="0.01"
+          />
+        </div>
+
+        <div class="col-12 col-md-12">
+          <label class="form-label">Referência da Venda</label>
+          <input 
+            type="text" 
+            id="pontos-referencia" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            placeholder="Código ou número da venda"
+            maxlength="100"
+          />
+        </div>
+        
+        <div class="pontos-info">
+          <small>1 ponto a cada R$ 100,00 (1%) do valor líquido</small>
+        </div>
+      </div>
+
+      <div id="pontos-error" class="error-message" style="display: none;"></div>
+
+      <div class="form-footer">
+        <button 
+          id="btnCancelarPontos"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          style="margin-right: 10px;"
+        >
+          Cancelar
+        </button>
+        <button 
+          id="btnSalvarPontos"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          data-id="${indicador.id}"
+        >
+          Adicionar Pontos
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderExcluirConfirm(indicador) {
+  return `
+    <div id="excluir-indicador">
+      <div class="col-12 subtitle-divider-margin">
+        <h1 class="subtitle">Excluir Indicador</h1>
+        <div class="subtitle-divider"></div>
+      </div>
+
+      <div class="confirm-message">
+        <p>Tem certeza que deseja excluir o indicador <strong>${indicador.nome}</strong>?</p>
+        <p class="warning-text">Esta ação não pode ser desfeita.</p>
+      </div>
+
+      <div id="excluir-error" class="error-message" style="display: none;"></div>
+
+      <div class="form-footer">
+        <button 
+          id="btnCancelarExcluir"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          style="margin-right: 10px;"
+        >
+          Cancelar
+        </button>
+        <button 
+          id="btnConfirmarExcluir"
+          class="ui-button ui-widget ui-state-default ui-corner-all ui-button-danger"
+          data-id="${indicador.id}"
+        >
+          Excluir
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function openCustomModal(type, data = null) {
   const overlay = document.getElementById("custom-modal-overlay");
   const content = document.getElementById("custom-modal-content");
 
@@ -102,17 +341,57 @@ function openCustomModal(type) {
   }
 
   if (type === "Consultar") {
-    content.innerHTML = `
-      <h2>Consultar Indicadores</h2>
-      <button id="btnCarregar" class="ui-button ui-widget ui-state-default ui-corner-all">
-        Carregar Lista
-      </button>
-      <ul id="lista-indicadores" style="margin-top: 15px;"></ul>
-    `;
+    content.innerHTML = renderConsultarForm();
+
+    const cpfInput = document.getElementById("filtro-cpf");
+    cpfInput.addEventListener("input", (e) => {
+      e.target.value = window.formatCPF(e.target.value);
+    });
 
     document
-      .getElementById("btnCarregar")
-      .addEventListener("click", window.carregarLista);
+      .getElementById("btnConsultar")
+      .addEventListener("click", window.handleConsultar);
+
+    window.carregarLista({});
+  }
+
+  if (type === "Editar" && data) {
+    content.innerHTML = renderEditarForm(data);
+
+    document.getElementById("nome").value = data.nome || "";
+    document.getElementById("apelido").value = data.apelido || "";
+
+    document
+      .getElementById("btnCancelarEditar")
+      .addEventListener("click", () => openCustomModal("Consultar"));
+
+    document
+      .getElementById("btnSalvarEditar")
+      .addEventListener("click", window.handleEditar);
+  }
+
+  if (type === "AdicionarPontos" && data) {
+    content.innerHTML = renderAdicionarPontosForm(data);
+
+    document
+      .getElementById("btnCancelarPontos")
+      .addEventListener("click", () => openCustomModal("Consultar"));
+
+    document
+      .getElementById("btnSalvarPontos")
+      .addEventListener("click", window.handleAdicionarPontos);
+  }
+
+  if (type === "Excluir" && data) {
+    content.innerHTML = renderExcluirConfirm(data);
+
+    document
+      .getElementById("btnCancelarExcluir")
+      .addEventListener("click", () => openCustomModal("Consultar"));
+
+    document
+      .getElementById("btnConfirmarExcluir")
+      .addEventListener("click", window.handleExcluir);
   }
 
   overlay.classList.add("active");

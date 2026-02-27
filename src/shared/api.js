@@ -13,6 +13,10 @@ async function apiFetch(endpoint, options = {}) {
     throw new Error(error);
   }
 
+  if (response.status === 204) {
+    return null;
+  }
+
   return response.json();
 }
 
@@ -23,8 +27,43 @@ async function cadastrarIndicador(dados) {
   });
 }
 
-async function listarIndicadores() {
-  return apiFetch("/");
+async function listarIndicadores(filtros = {}) {
+  const params = new URLSearchParams();
+  
+  if (filtros.nome) params.append("nome", filtros.nome);
+  if (filtros.cpf) params.append("cpf", filtros.cpf);
+  if (filtros.apelido) params.append("apelido", filtros.apelido);
+  if (filtros.pontos_min) params.append("pontos_min", filtros.pontos_min);
+  if (filtros.pontos_max) params.append("pontos_max", filtros.pontos_max);
+  if (filtros.ativo !== undefined) params.append("ativo", filtros.ativo);
+  if (filtros.order_by) params.append("order_by", filtros.order_by);
+  if (filtros.order_dir) params.append("order_dir", filtros.order_dir);
+  if (filtros.page) params.append("page", filtros.page);
+  if (filtros.limit) params.append("limit", filtros.limit);
+
+  const query = params.toString();
+  return apiFetch(`/${query ? `?${query}` : ""}`);
+}
+
+async function buscarIndicador(id) {
+  return apiFetch(`/${id}`);
+}
+
+async function atualizarIndicador(id, dados) {
+  return apiFetch(`/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(dados),
+  });
+}
+
+async function adicionarPontos(id, valorLiquidoVenda, referenciaVenda) {
+  return apiFetch(`/${id}/pontuacao`, {
+    method: "POST",
+    body: JSON.stringify({
+      valor_liquido_venda: valorLiquidoVenda,
+      referencia_venda: referenciaVenda,
+    }),
+  });
 }
 
 async function excluirIndicador(id) {
@@ -32,3 +71,10 @@ async function excluirIndicador(id) {
     method: "DELETE",
   });
 }
+
+window.cadastrarIndicador = cadastrarIndicador;
+window.listarIndicadores = listarIndicadores;
+window.buscarIndicador = buscarIndicador;
+window.atualizarIndicador = atualizarIndicador;
+window.adicionarPontos = adicionarPontos;
+window.excluirIndicador = excluirIndicador;
