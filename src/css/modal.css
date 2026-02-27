@@ -28,8 +28,12 @@
   padding: 20px;
   border-radius: 8px;
   min-width: 400px;
+  max-width: 95vw;
+  max-height: 90vh;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
 /* Modal Close Button */
@@ -52,6 +56,8 @@
 /* Modal Content */
 #custom-modal-content {
   margin-top: 10px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Mensagem de erro */
@@ -116,6 +122,17 @@
 }
 
 /* Filtros */
+.filtros-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.filtros-toggle button {
+  min-width: 140px;
+  height: 36px;
+}
+
 .filtros-container {
   display: flex;
   flex-direction: column;
@@ -158,6 +175,9 @@
 /* Tabela */
 .tabela-container {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  min-height: 200px;
 }
 
 .indicadores-table {

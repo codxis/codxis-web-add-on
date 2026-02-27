@@ -91,7 +91,13 @@ function renderConsultarForm() {
         <div class="subtitle-divider"></div>
       </div>
 
-      <div class="filtros-container">
+      <div class="filtros-toggle">
+        <button id="btnToggleFiltros" class="ui-button ui-widget ui-state-default ui-corner-all">
+          Mostrar Filtros
+        </button>
+      </div>
+
+      <div id="filtros-container" class="filtros-container" style="display: none;">
         <div class="filtros-row">
           <div class="filtro-item">
             <label class="form-label">Nome</label>
@@ -347,6 +353,20 @@ function openCustomModal(type, data = null) {
     cpfInput.addEventListener("input", (e) => {
       e.target.value = window.formatCPF(e.target.value);
     });
+
+    document
+      .getElementById("btnToggleFiltros")
+      .addEventListener("click", () => {
+        const filtrosContainer = document.getElementById("filtros-container");
+        const btn = document.getElementById("btnToggleFiltros");
+        if (filtrosContainer.style.display === "none") {
+          filtrosContainer.style.display = "block";
+          btn.textContent = "Ocultar Filtros";
+        } else {
+          filtrosContainer.style.display = "none";
+          btn.textContent = "Mostrar Filtros";
+        }
+      });
 
     document
       .getElementById("btnConsultar")
