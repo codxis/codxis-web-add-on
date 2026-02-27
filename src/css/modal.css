@@ -1,0 +1,36 @@
+#cadastro-indicadores input {
+  border: 1px solid #282e3f;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Container do formulário */
+#cadastro-indicadores {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Área que contém os inputs */
+#cadastro-indicadores .form-body {
+  flex: 1;
+  width: 100%;
+}
+
+#cadastro-indicadores .form-body > div {
+  width: 100%;
+}
+
+/* Footer fixo */
+#cadastro-indicadores .form-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 32px; /* Espaço maior entre form e botão */
+}
+
+/* Botão tamanho fixo */
+#cadastro-indicadores .form-footer button {
+  width: 140px;
+  height: 42px;
+  font-weight: 500;
+}
