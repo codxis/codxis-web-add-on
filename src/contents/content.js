@@ -140,7 +140,7 @@ function initSelectIndicador() {
 
 async function loadIndicadores(selectElement, createFn) {
   try {
-    const response = await listarIndicadores();
+    const response = await listarIndicadores({ ativo: true });
 
     if (!response.data || !response.data.length) {
       return;

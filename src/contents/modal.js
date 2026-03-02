@@ -150,14 +150,6 @@ function renderConsultarForm() {
               min="0"
             />
           </div>
-          <div class="filtro-item">
-            <label class="form-label">Ativo</label>
-            <select id="filtro-ativo" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input">
-              <option value="">Todos</option>
-              <option value="true">Sim</option>
-              <option value="false">Não</option>
-            </select>
-          </div>
         </div>
         <div class="filtros-actions">
           <button 
@@ -387,7 +379,7 @@ function openCustomModal(type, data = null) {
       const btnConsultar = document.getElementById("btnConsultar");
       if (btnConsultar) btnConsultar.addEventListener("click", window.handleConsultar);
 
-      window.carregarLista({});
+      window.carregarLista({ ativo: true });
       window.setupTabelaEventListeners();
     }
 

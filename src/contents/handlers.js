@@ -14,7 +14,7 @@ function getFiltros() {
     apelido: document.getElementById("filtro-apelido")?.value.trim() || "",
     pontos_min: document.getElementById("filtro-pontos-min")?.value || "",
     pontos_max: document.getElementById("filtro-pontos-max")?.value || "",
-    ativo: document.getElementById("filtro-ativo")?.value === "" ? undefined : document.getElementById("filtro-ativo")?.value === "true",
+    ativo: true,
   };
 }
 
@@ -286,17 +286,24 @@ function excluirIndicadorConfirm(id) {
 }
 
 async function handleExcluir() {
-  const id = document.getElementById("btnConfirmarExcluir").dataset.id;
+  const btn = document.getElementById("btnConfirmarExcluir");
+  const id = btn?.dataset.id;
+
+  if (!id) {
+    console.error("ID do indicador não encontrado");
+    return;
+  }
 
   const errorDiv = document.getElementById("excluir-error");
   errorDiv.style.display = "none";
 
-  const btn = document.getElementById("btnConfirmarExcluir");
   btn.disabled = true;
   btn.textContent = "Excluindo...";
 
   try {
-    await window.excluirIndicador(id);
+    console.log("Excluindo indicador com ID:", id);
+    const result = await window.excluirIndicador(id);
+    console.log("Resultado da exclusão:", result);
 
     alert("Indicador excluído com sucesso!");
 
@@ -304,6 +311,7 @@ async function handleExcluir() {
     window.openCustomModal("Consultar");
     await carregarLista(getFiltros());
   } catch (err) {
+    console.error("Erro ao excluir:", err);
     errorDiv.textContent = "Erro ao excluir: " + err.message;
     errorDiv.style.display = "block";
   } finally {

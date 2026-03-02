@@ -29,13 +29,13 @@ async function cadastrarIndicador(dados) {
 
 async function listarIndicadores(filtros = {}) {
   const params = new URLSearchParams();
-  
+
   if (filtros.nome) params.append("nome", filtros.nome);
   if (filtros.cpf) params.append("cpf", filtros.cpf);
   if (filtros.apelido) params.append("apelido", filtros.apelido);
   if (filtros.pontos_min) params.append("pontos_min", filtros.pontos_min);
   if (filtros.pontos_max) params.append("pontos_max", filtros.pontos_max);
-  if (filtros.ativo !== undefined) params.append("ativo", filtros.ativo);
+  if (filtros.ativo !== undefined) params.append("ativo", true);
   if (filtros.order_by) params.append("order_by", filtros.order_by);
   if (filtros.order_dir) params.append("order_dir", filtros.order_dir);
   if (filtros.page) params.append("page", filtros.page);
@@ -67,6 +67,7 @@ async function adicionarPontos(id, valorLiquidoVenda, referenciaVenda) {
 }
 
 async function excluirIndicador(id) {
+  console.log("API: Excluindo indicador ID:", id);
   return apiFetch(`/${id}`, {
     method: "DELETE",
   });
