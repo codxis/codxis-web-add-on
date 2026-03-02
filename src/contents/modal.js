@@ -35,7 +35,7 @@ function renderCadastroForm() {
       <div class="form-body">
         <div class="col-12 subtitle-divider-margin">
           <h1 class="subtitle">Cadastro de Indicador</h1>
-         subtitle-divider"> <div class="</div>
+         <div class="subtitle-divider"> </div>
         </div>
 
         <div class="col-12 col-md-12">
@@ -207,7 +207,7 @@ function renderEditarForm(indicador) {
             id="edit-nome" 
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="150"
-            value="${window.formatCPF(indicador.cpf || '')}"
+            value="${window.formatCPF(indicador.cpf || "")}"
           />
         </div>
       </div>
@@ -339,7 +339,7 @@ function openCustomModal(type, data = null) {
 
     const btnSalvar = document.getElementById("btnSalvar");
     btnSalvar.addEventListener("click", window.handleCadastro);
-    
+
     const cpfInput = document.getElementById("cpf");
     cpfInput.addEventListener("input", (e) => {
       e.target.value = window.formatCPF(e.target.value);
