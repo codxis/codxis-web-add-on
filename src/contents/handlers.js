@@ -152,6 +152,9 @@ async function carregarLista(filtros = {}) {
     
     if (isDefaultQuery) {
       setCache(response.data || []);
+      response.data?.forEach((ind) => {
+        indicadorCache[ind.id] = ind;
+      });
     }
     
     renderTabelaIndicadores(response.data || []);
@@ -213,6 +216,11 @@ async function editarIndicador(id) {
 
   const errorDiv = document.getElementById("consulta-error");
   errorDiv.style.display = "none";
+
+  if (indicadorCache[id]) {
+    window.openCustomModal("Editar", indicadorCache[id]);
+    return;
+  }
 
   try {
     const indicador = await window.buscarIndicador(id);

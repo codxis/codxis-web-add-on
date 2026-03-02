@@ -16,7 +16,7 @@ function createModal() {
 
   const closeBtn = document.createElement("button");
   closeBtn.className = "modal-close";
-  closeBtn.textContent = "X";
+  closeBtn.textContent = "×";
 
   closeBtn.addEventListener("click", () => {
     const overlay = document.getElementById("custom-modal-overlay");
