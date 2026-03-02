@@ -46,17 +46,45 @@ function renderTabelaIndicadores(data) {
         <td>${formatCurrency(valorReais)}</td>
         <td>
           <div class="acoes-dropdown">
-            <button class="acoes-btn" onclick="toggleAcoesDropdown(this)">⋯</button>
+            <button class="acoes-btn">⋯</button>
             <div class="acoes-menu">
-              <button class="acao-item" onclick="editarIndicador('${indicador.id}')">Editar</button>
-              <button class="acao-item" onclick="adicionarPontosIndicador('${indicador.id}')">Adicionar Pontos</button>
-              <button class="acao-item acao-excluir" onclick="excluirIndicadorConfirm('${indicador.id}')">Excluir</button>
+              <button class="acao-item" data-action="editar" data-id="${indicador.id}">Editar</button>
+              <button class="acao-item" data-action="adicionar-pontos" data-id="${indicador.id}">Adicionar Pontos</button>
+              <button class="acao-item acao-excluir" data-action="excluir" data-id="${indicador.id}">Excluir</button>
             </div>
           </div>
         </td>
       </tr>
     `;
   }).join("");
+
+  document.querySelectorAll(".acoes-dropdown").forEach((dropdown) => {
+    const btn = dropdown.querySelector(".acoes-btn");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const menu = dropdown.querySelector(".acoes-menu");
+      const isActive = menu.classList.contains("show");
+      closeAllAcoesDropdowns();
+      if (!isActive) {
+        menu.classList.add("show");
+      }
+    });
+  });
+
+  document.querySelectorAll(".acoes-menu .acao-item").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      closeAllAcoesDropdowns();
+      if (action === "editar") {
+        window.editarIndicador(id);
+      } else if (action === "adicionar-pontos") {
+        window.adicionarPontosIndicador(id);
+      } else if (action === "excluir") {
+        window.excluirIndicadorConfirm(id);
+      }
+    });
+  });
 }
 
 async function handleConsultar() {
