@@ -10,6 +10,7 @@ function createModal() {
   closeBtn.textContent = "X";
 
   closeBtn.addEventListener("click", () => {
+    const overlay = document.getElementById("custom-modal-overlay");
     overlay.classList.remove("active");
   });
 
@@ -204,10 +205,9 @@ function renderEditarForm(indicador) {
           <label class="form-label">Nome*</label>
           <input 
             type="text" 
-            id="edit-nome" 
+            id="nome" 
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="150"
-            value="${window.formatCPF(indicador.cpf || "")}"
           />
         </div>
       </div>
@@ -329,92 +329,95 @@ function renderExcluirConfirm(indicador) {
 }
 
 function openCustomModal(type, data = null) {
-  const overlay = document.getElementById("custom-modal-overlay");
-  const content = document.getElementById("custom-modal-content");
+  try {
+    const overlay = document.getElementById("custom-modal-overlay");
+    const content = document.getElementById("custom-modal-content");
 
-  content.innerHTML = "";
+    if (!overlay || !content) {
+      console.error("Modal elements not found");
+      return;
+    }
 
-  if (type === "Cadastrar") {
-    content.innerHTML = renderCadastroForm();
+    content.innerHTML = "";
 
-    const btnSalvar = document.getElementById("btnSalvar");
-    btnSalvar.addEventListener("click", window.handleCadastro);
+    if (type === "Cadastrar") {
+      content.innerHTML = renderCadastroForm();
 
-    const cpfInput = document.getElementById("cpf");
-    cpfInput.addEventListener("input", (e) => {
-      e.target.value = window.formatCPF(e.target.value);
-    });
-  }
+      const btnSalvar = document.getElementById("btnSalvar");
+      if (btnSalvar) btnSalvar.addEventListener("click", window.handleCadastro);
 
-  if (type === "Consultar") {
-    content.innerHTML = renderConsultarForm();
+      const cpfInput = document.getElementById("cpf");
+      if (cpfInput) cpfInput.addEventListener("input", (e) => {
+        e.target.value = window.formatCPF(e.target.value);
+      });
+    }
 
-    const cpfInput = document.getElementById("filtro-cpf");
-    cpfInput.addEventListener("input", (e) => {
-      e.target.value = window.formatCPF(e.target.value);
-    });
+    if (type === "Consultar") {
+      content.innerHTML = renderConsultarForm();
 
-    document
-      .getElementById("btnToggleFiltros")
-      .addEventListener("click", () => {
+      const cpfInput = document.getElementById("filtro-cpf");
+      if (cpfInput) cpfInput.addEventListener("input", (e) => {
+        e.target.value = window.formatCPF(e.target.value);
+      });
+
+      const btnToggleFiltros = document.getElementById("btnToggleFiltros");
+      if (btnToggleFiltros) btnToggleFiltros.addEventListener("click", () => {
         const filtrosContainer = document.getElementById("filtros-container");
         const btn = document.getElementById("btnToggleFiltros");
-        if (filtrosContainer.style.display === "none") {
-          filtrosContainer.style.display = "block";
-          btn.textContent = "Ocultar Filtros";
-        } else {
-          filtrosContainer.style.display = "none";
-          btn.textContent = "Mostrar Filtros";
+        if (filtrosContainer && btn) {
+          if (filtrosContainer.style.display === "none") {
+            filtrosContainer.style.display = "block";
+            btn.textContent = "Ocultar Filtros";
+          } else {
+            filtrosContainer.style.display = "none";
+            btn.textContent = "Mostrar Filtros";
+          }
         }
       });
 
-    document
-      .getElementById("btnConsultar")
-      .addEventListener("click", window.handleConsultar);
+      const btnConsultar = document.getElementById("btnConsultar");
+      if (btnConsultar) btnConsultar.addEventListener("click", window.handleConsultar);
 
-    window.carregarLista({});
+      window.carregarLista({});
+      window.setupTabelaEventListeners();
+    }
+
+    if (type === "Editar" && data) {
+      content.innerHTML = renderEditarForm(data);
+
+      const nomeInput = document.getElementById("nome");
+      const apelidoInput = document.getElementById("apelido");
+      if (nomeInput) nomeInput.value = data.nome || "";
+      if (apelidoInput) apelidoInput.value = data.apelido || "";
+
+      const btnCancelar = document.getElementById("btnCancelarEditar");
+      const btnSalvar = document.getElementById("btnSalvarEditar");
+      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
+      if (btnSalvar) btnSalvar.addEventListener("click", window.handleEditar);
+    }
+
+    if (type === "AdicionarPontos" && data) {
+      content.innerHTML = renderAdicionarPontosForm(data);
+
+      const btnCancelar = document.getElementById("btnCancelarPontos");
+      const btnSalvar = document.getElementById("btnSalvarPontos");
+      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
+      if (btnSalvar) btnSalvar.addEventListener("click", window.handleAdicionarPontos);
+    }
+
+    if (type === "Excluir" && data) {
+      content.innerHTML = renderExcluirConfirm(data);
+
+      const btnCancelar = document.getElementById("btnCancelarExcluir");
+      const btnConfirmar = document.getElementById("btnConfirmarExcluir");
+      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
+      if (btnConfirmar) btnConfirmar.addEventListener("click", window.handleExcluir);
+    }
+
+    overlay.classList.add("active");
+  } catch (error) {
+    console.error("Error opening modal:", error);
   }
-
-  if (type === "Editar" && data) {
-    content.innerHTML = renderEditarForm(data);
-
-    document.getElementById("nome").value = data.nome || "";
-    document.getElementById("apelido").value = data.apelido || "";
-
-    document
-      .getElementById("btnCancelarEditar")
-      .addEventListener("click", () => openCustomModal("Consultar"));
-
-    document
-      .getElementById("btnSalvarEditar")
-      .addEventListener("click", window.handleEditar);
-  }
-
-  if (type === "AdicionarPontos" && data) {
-    content.innerHTML = renderAdicionarPontosForm(data);
-
-    document
-      .getElementById("btnCancelarPontos")
-      .addEventListener("click", () => openCustomModal("Consultar"));
-
-    document
-      .getElementById("btnSalvarPontos")
-      .addEventListener("click", window.handleAdicionarPontos);
-  }
-
-  if (type === "Excluir" && data) {
-    content.innerHTML = renderExcluirConfirm(data);
-
-    document
-      .getElementById("btnCancelarExcluir")
-      .addEventListener("click", () => openCustomModal("Consultar"));
-
-    document
-      .getElementById("btnConfirmarExcluir")
-      .addEventListener("click", window.handleExcluir);
-  }
-
-  overlay.classList.add("active");
 }
 
 window.openCustomModal = openCustomModal;

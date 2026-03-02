@@ -45,22 +45,32 @@ function renderTabelaIndicadores(data) {
         <td>${pontos.toLocaleString("pt-BR")}</td>
         <td>${formatCurrency(valorReais)}</td>
         <td>
-          <div class="acoes-dropdown">
+          <div class="acoes-dropdown" data-id="${indicador.id}">
             <button class="acoes-btn">⋯</button>
             <div class="acoes-menu">
-              <button class="acao-item" data-action="editar" data-id="${indicador.id}">Editar</button>
-              <button class="acao-item" data-action="adicionar-pontos" data-id="${indicador.id}">Adicionar Pontos</button>
-              <button class="acao-item acao-excluir" data-action="excluir" data-id="${indicador.id}">Excluir</button>
+              <button class="acao-item" data-action="editar">Editar</button>
+              <button class="acao-item" data-action="adicionar-pontos">Adicionar Pontos</button>
+              <button class="acao-item acao-excluir" data-action="excluir">Excluir</button>
             </div>
           </div>
         </td>
       </tr>
     `;
   }).join("");
+}
 
-  document.querySelectorAll(".acoes-dropdown").forEach((dropdown) => {
-    const btn = dropdown.querySelector(".acoes-btn");
-    btn.addEventListener("click", (e) => {
+function setupTabelaEventListeners() {
+  const tbody = document.getElementById("tabela-corpo");
+  if (!tbody) return;
+
+  if (tbody.dataset.listenersAdded) return;
+  tbody.dataset.listenersAdded = "true";
+
+  tbody.addEventListener("click", (e) => {
+    const dropdown = e.target.closest(".acoes-dropdown");
+    const acaoItem = e.target.closest(".acao-item");
+
+    if (e.target.classList.contains("acoes-btn") && dropdown) {
       e.stopPropagation();
       const menu = dropdown.querySelector(".acoes-menu");
       const isActive = menu.classList.contains("show");
@@ -68,13 +78,12 @@ function renderTabelaIndicadores(data) {
       if (!isActive) {
         menu.classList.add("show");
       }
-    });
-  });
+      return;
+    }
 
-  document.querySelectorAll(".acoes-menu .acao-item").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const action = btn.dataset.action;
-      const id = btn.dataset.id;
+    if (acaoItem && dropdown) {
+      const action = acaoItem.dataset.action;
+      const id = dropdown.dataset.id;
       closeAllAcoesDropdowns();
       if (action === "editar") {
         window.editarIndicador(id);
@@ -83,7 +92,8 @@ function renderTabelaIndicadores(data) {
       } else if (action === "excluir") {
         window.excluirIndicadorConfirm(id);
       }
-    });
+      return;
+    }
   });
 }
 
@@ -176,8 +186,8 @@ async function editarIndicador(id) {
 
 async function handleEditar() {
   const id = document.getElementById("btnSalvarEditar").dataset.id;
-  const nome = document.getElementById("edit-nome").value.trim();
-  const apelido = document.getElementById("edit-apelido")?.value.trim() || "";
+  const nome = document.getElementById("nome").value.trim();
+  const apelido = document.getElementById("apelido")?.value.trim() || "";
 
   const errorDiv = document.getElementById("edit-error");
   errorDiv.style.display = "none";
@@ -215,6 +225,13 @@ function adicionarPontosIndicador(id) {
   const indicador = indicadorCache[id];
   if (indicador) {
     window.openCustomModal("AdicionarPontos", indicador);
+  } else {
+    window.buscarIndicador(id).then((data) => {
+      indicadorCache[id] = data;
+      window.openCustomModal("AdicionarPontos", data);
+    }).catch((err) => {
+      console.error("Erro ao buscar indicador:", err);
+    });
   }
 }
 
@@ -258,6 +275,13 @@ function excluirIndicadorConfirm(id) {
   const indicador = indicadorCache[id];
   if (indicador) {
     window.openCustomModal("Excluir", indicador);
+  } else {
+    window.buscarIndicador(id).then((data) => {
+      indicadorCache[id] = data;
+      window.openCustomModal("Excluir", data);
+    }).catch((err) => {
+      console.error("Erro ao buscar indicador:", err);
+    });
   }
 }
 
@@ -321,3 +345,5 @@ window.editarIndicador = editarIndicador;
 window.adicionarPontosIndicador = adicionarPontosIndicador;
 window.excluirIndicadorConfirm = excluirIndicadorConfirm;
 window.toggleAcoesDropdown = toggleAcoesDropdown;
+window.getFiltros = getFiltros;
+window.setupTabelaEventListeners = setupTabelaEventListeners;
