@@ -210,6 +210,15 @@ function renderEditarForm(indicador) {
             maxlength="150"
           />
         </div>
+
+        <div class="col-12 col-md-12">
+          <label class="form-label">Apelido</label>
+          <input 
+            type="text" 
+            id="apelido" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+          />
+        </div>
       </div>
 
       <div id="edit-error" class="error-message" style="display: none;"></div>
