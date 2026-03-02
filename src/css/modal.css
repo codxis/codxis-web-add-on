@@ -293,7 +293,8 @@
    ======================== */
 
 #editar-indicador input,
-#adicionar-pontos input {
+#adicionar-pontos input,
+#resgatar-pontos input {
   border: 1px solid #282e3f;
   border-radius: 6px;
   width: 100%;
@@ -301,7 +302,8 @@
 
 #editar-indicador .form-footer,
 #adicionar-pontos .form-footer,
-#excluir-indicador .form-footer {
+#excluir-indicador .form-footer,
+#resgatar-pontos .form-footer {
   display: flex;
   justify-content: flex-end;
   padding-top: 20px;
@@ -309,7 +311,8 @@
 
 #editar-indicador .form-footer button,
 #adicionar-pontos .form-footer button,
-#excluir-indicador .form-footer button {
+#excluir-indicador .form-footer button,
+#resgatar-pontos .form-footer button {
   min-width: 100px;
   height: 38px;
 }
@@ -325,6 +328,27 @@
   border-radius: 4px;
   color: #0066cc;
   font-size: 13px;
+}
+
+/* ========================
+   Resgatar Pontos
+   ======================== */
+
+.resgate-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.resgate-info p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.resgate-info strong {
+  color: #282e3f;
 }
 
 /* ========================

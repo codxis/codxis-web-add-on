@@ -71,6 +71,7 @@ function renderTabelaIndicadores(data) {
             <div class="acoes-menu">
               <button class="acao-item" data-action="editar">Editar</button>
               <button class="acao-item" data-action="adicionar-pontos">Adicionar Pontos</button>
+              <button class="acao-item" data-action="resgatar-pontos">Resgatar Pontos</button>
               <button class="acao-item acao-excluir" data-action="excluir">Excluir</button>
             </div>
           </div>
@@ -102,7 +103,7 @@ function setupTabelaEventListeners() {
       return;
     }
 
-    if (acaoItem && dropdown) {
+      if (acaoItem && dropdown) {
       const action = acaoItem.dataset.action;
       const id = dropdown.dataset.id;
       closeAllAcoesDropdowns();
@@ -110,6 +111,8 @@ function setupTabelaEventListeners() {
         window.editarIndicador(id);
       } else if (action === "adicionar-pontos") {
         window.adicionarPontosIndicador(id);
+      } else if (action === "resgatar-pontos") {
+        window.resgatarPontosIndicador(id);
       } else if (action === "excluir") {
         window.excluirIndicadorConfirm(id);
       }
@@ -324,6 +327,66 @@ function excluirIndicadorConfirm(id) {
   }
 }
 
+function resgatarPontosIndicador(id) {
+  closeAllAcoesDropdowns();
+  
+  const indicador = indicadorCache[id];
+  if (indicador) {
+    window.openCustomModal("ResgatarPontos", indicador);
+  } else {
+    window.buscarIndicador(id).then((data) => {
+      indicadorCache[id] = data;
+      window.openCustomModal("ResgatarPontos", data);
+    }).catch((err) => {
+      console.error("Erro ao buscar indicador:", err);
+    });
+  }
+}
+
+async function handleResgatarPontos() {
+  const id = document.getElementById("btnConfirmarResgate").dataset.id;
+  const pontosInput = document.getElementById("resgate-pontos");
+  const pontos = parseFloat(pontosInput.value);
+  const observacao = document.getElementById("resgate-observacao").value.trim();
+
+  const errorDiv = document.getElementById("resgate-error");
+  errorDiv.style.display = "none";
+
+  if (!pontos || pontos <= 0) {
+    errorDiv.textContent = "Quantidade de pontos é obrigatória.";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  const indicador = indicadorCache[id];
+  if (pontos > (indicador?.pontos || 0)) {
+    errorDiv.textContent = "Pontos insuficientes.";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  const btn = document.getElementById("btnConfirmarResgate");
+  btn.disabled = true;
+  btn.textContent = "Processando...";
+
+  try {
+    const resultado = await window.rescatarPontos(id, pontos, observacao);
+
+    alert(`Resgate realizado com sucesso! \nPontos resgatados: ${resultado.pontos_resgatados}\nValor em R$: ${formatCurrency(resultado.valor_reais)}\nSaldo restante: ${resultado.saldo_restante}`);
+    invalidateCache();
+
+    delete indicadorCache[id];
+    window.openCustomModal("Consultar");
+    await carregarLista(getFiltros());
+  } catch (err) {
+    errorDiv.textContent = "Erro ao rescindir pontos: " + err.message;
+    errorDiv.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Resgatar Pontos";
+  }
+}
+
 async function handleExcluir() {
   const btn = document.getElementById("btnConfirmarExcluir");
   const id = btn?.dataset.id;
@@ -389,8 +452,10 @@ window.carregarLista = carregarLista;
 window.handleEditar = handleEditar;
 window.handleAdicionarPontos = handleAdicionarPontos;
 window.handleExcluir = handleExcluir;
+window.handleResgatarPontos = handleResgatarPontos;
 window.editarIndicador = editarIndicador;
 window.adicionarPontosIndicador = adicionarPontosIndicador;
+window.resgatarPontosIndicador = rescindirPontosIndicador;
 window.excluirIndicadorConfirm = excluirIndicadorConfirm;
 window.toggleAcoesDropdown = toggleAcoesDropdown;
 window.getFiltros = getFiltros;

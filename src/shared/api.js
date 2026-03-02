@@ -73,9 +73,20 @@ async function excluirIndicador(id) {
   });
 }
 
+async function rescatarPontos(id, pontos, observacao = "") {
+  return apiFetch(`/${id}/resgate`, {
+    method: "POST",
+    body: JSON.stringify({
+      pontos: pontos,
+      observacao: observacao,
+    }),
+  });
+}
+
 window.cadastrarIndicador = cadastrarIndicador;
 window.listarIndicadores = listarIndicadores;
 window.buscarIndicador = buscarIndicador;
 window.atualizarIndicador = atualizarIndicador;
 window.adicionarPontos = adicionarPontos;
 window.excluirIndicador = excluirIndicador;
+window.rescatarPontos = rescatarPontos;

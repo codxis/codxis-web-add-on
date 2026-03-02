@@ -1,4 +1,13 @@
 function createModal() {
+  const PONTOS_VALOR_REAIS = 0.50;
+  
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  }
+  
   const overlay = document.createElement("div");
   overlay.id = "custom-modal-overlay";
 
@@ -329,6 +338,74 @@ function renderExcluirConfirm(indicador) {
   `;
 }
 
+function renderResgatarPontosForm(indicador) {
+  const pontosAtuais = indicador.pontos || 0;
+  const valorMaximo = pontosAtuais * PONTOS_VALOR_REAIS;
+  
+  return `
+    <div id="resgatar-pontos">
+      <div class="col-12 subtitle-divider-margin">
+        <h1 class="subtitle">Resgatar Pontos - ${indicador.nome}</h1>
+        <div class="subtitle-divider"></div>
+      </div>
+
+      <div class="resgate-info">
+        <p><strong>Pontos disponíveis:</strong> ${pontosAtuais.toLocaleString("pt-BR")}</p>
+        <p><strong>Valor disponível:</strong> ${formatCurrency(valorMaximo)}</p>
+      </div>
+
+      <div class="form-body">
+        <div class="col-12 col-md-12">
+          <label class="form-label">Pontos a Resgatar*</label>
+          <input 
+            type="number" 
+            id="resgate-pontos" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            placeholder="0"
+            min="0.01"
+            step="0.01"
+            max="${pontosAtuais}"
+          />
+        </div>
+
+        <div class="col-12 col-md-12">
+          <label class="form-label">Observação</label>
+          <input 
+            type="text" 
+            id="resgate-observacao" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            placeholder="Observação opcional"
+            maxlength="255"
+          />
+        </div>
+        
+        <div class="pontos-info">
+          <small>1 ponto = R$0,50</small>
+        </div>
+      </div>
+
+      <div id="resgate-error" class="error-message" style="display: none;"></div>
+
+      <div class="form-footer">
+        <button 
+          id="btnCancelarResgate"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          style="margin-right: 10px;"
+        >
+          Cancelar
+        </button>
+        <button 
+          id="btnConfirmarResgate"
+          class="ui-button ui-widget ui-state-default ui-corner-all"
+          data-id="${indicador.id}"
+        >
+          Resgatar Pontos
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 function openCustomModal(type, data = null) {
   try {
     const overlay = document.getElementById("custom-modal-overlay");
@@ -413,6 +490,15 @@ function openCustomModal(type, data = null) {
       const btnConfirmar = document.getElementById("btnConfirmarExcluir");
       if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
       if (btnConfirmar) btnConfirmar.addEventListener("click", window.handleExcluir);
+    }
+
+    if (type === "ResgatarPontos" && data) {
+      content.innerHTML = renderResgatarPontosForm(data);
+
+      const btnCancelar = document.getElementById("btnCancelarResgate");
+      const btnConfirmar = document.getElementById("btnConfirmarResgate");
+      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
+      if (btnConfirmar) btnConfirmar.addEventListener("click", window.handleResgatarPontos);
     }
 
     overlay.classList.add("active");
