@@ -1,5 +1,26 @@
 const PONTOS_VALOR_REAIS = 0.50;
 
+const indicadoresCache = {
+  data: null,
+  timestamp: null,
+  TTL: 60 * 60 * 1000, // 1 hora
+};
+
+function isCacheValid() {
+  if (!indicadoresCache.data || !indicadoresCache.timestamp) return false;
+  return Date.now() - indicadoresCache.timestamp < indicadoresCache.TTL;
+}
+
+function invalidateCache() {
+  indicadoresCache.data = null;
+  indicadoresCache.timestamp = null;
+}
+
+function setCache(data) {
+  indicadoresCache.data = data;
+  indicadoresCache.timestamp = Date.now();
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -107,6 +128,16 @@ async function carregarLista(filtros = {}) {
   const tbody = document.getElementById("tabela-corpo");
 
   errorDiv.style.display = "none";
+  
+  const isDefaultQuery = filtros.ativo === true && 
+    !filtros.nome && !filtros.cpf && !filtros.apelido && 
+    !filtros.pontos_min && !filtros.pontos_max;
+  
+  if (isDefaultQuery && isCacheValid()) {
+    renderTabelaIndicadores(indicadoresCache.data || []);
+    return;
+  }
+
   tbody.innerHTML = `
     <tr class="loading-row">
       <td colspan="4">Carregando...</td>
@@ -115,6 +146,11 @@ async function carregarLista(filtros = {}) {
 
   try {
     const response = await window.listarIndicadores(filtros);
+    
+    if (isDefaultQuery) {
+      setCache(response.data || []);
+    }
+    
     renderTabelaIndicadores(response.data || []);
   } catch (err) {
     errorDiv.textContent = "Erro ao buscar indicadores: " + err.message;
@@ -155,6 +191,7 @@ async function handleCadastro() {
     await window.cadastrarIndicador({ nome, cpf: cpfDigits, apelido });
 
     alert("Indicador cadastrado com sucesso!");
+    invalidateCache();
 
     document.getElementById("custom-modal-overlay").classList.remove("active");
   } catch (err) {
@@ -206,6 +243,7 @@ async function handleEditar() {
     await window.atualizarIndicador(id, { nome, apelido });
 
     alert("Indicador atualizado com sucesso!");
+    invalidateCache();
 
     indicadorCache[id] = { ...indicadorCache[id], nome, apelido };
     window.openCustomModal("Consultar");
@@ -257,6 +295,7 @@ async function handleAdicionarPontos() {
     const resultado = await window.adicionarPontos(id, valorVenda, referencia);
 
     alert(`Pontos adicionados! \nValor da venda: ${formatCurrency(valorVenda)}\nPontos creditados: ${resultado.pontos_creditados}\nTotal de pontos: ${resultado.total_pontos}`);
+    invalidateCache();
 
     window.openCustomModal("Consultar");
     await carregarLista(getFiltros());
@@ -306,6 +345,7 @@ async function handleExcluir() {
     console.log("Resultado da exclusão:", result);
 
     alert("Indicador excluído com sucesso!");
+    invalidateCache();
 
     delete indicadorCache[id];
     window.openCustomModal("Consultar");
