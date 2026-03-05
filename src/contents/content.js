@@ -1,3 +1,7 @@
+console.log("[DEBUG] content.js carregado");
+
+window.indicadorSelecionadoId = null;
+
 function createSearchableSelect({
   options,
   placeholder = "",
@@ -54,6 +58,8 @@ function createSearchableSelect({
         li.addEventListener("click", () => {
           triggerText.textContent = opt.label;
           dropdown.style.display = "none";
+          window.indicadorSelecionadoId = opt.value;
+          console.log("[DEBUG] Indicador selecionado - id:", opt.value, "label:", opt.label);
         });
 
         list.appendChild(li);
@@ -67,8 +73,7 @@ function createSearchableSelect({
   });
 
   trigger.addEventListener("click", () => {
-    dropdown.style.display =
-      dropdown.style.display === "block" ? "none" : "block";
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     searchInput.focus();
   });
 
@@ -117,12 +122,10 @@ function waitForElement(selector, callback, maxAttempts = 10) {
 }
 
 function initSelectIndicador() {
-  const targetElement = document.getElementById("formNFCe:colaborador");
-
+  const targetElement = document.querySelector("#formNFCe\\:colaborador");
   if (!targetElement) return;
 
   const parent = targetElement.parentElement.parentElement;
-
   if (parent.querySelector(".custom-field-wrapper")) return;
 
   const select = createSearchableSelect({
@@ -131,7 +134,6 @@ function initSelectIndicador() {
   });
 
   const field = createFieldWithLabel("Indicador", select);
-
   const firstChild = parent.children[0];
   parent.insertBefore(field, firstChild.nextSibling);
 
@@ -141,10 +143,7 @@ function initSelectIndicador() {
 async function loadIndicadores(selectElement, createFn) {
   try {
     const response = await listarIndicadores({ ativo: true });
-
-    if (!response.data || !response.data.length) {
-      return;
-    }
+    if (!response.data || !response.data.length) return;
 
     const options = response.data.map((indicador) => ({
       value: indicador.id,
@@ -159,7 +158,7 @@ async function loadIndicadores(selectElement, createFn) {
     const field = createFieldWithLabel("Indicador", newSelect);
     const parent = selectElement.parentElement.parentElement;
     const oldField = parent.querySelector(".custom-field-wrapper");
-    
+
     if (oldField) {
       parent.replaceChild(field, oldField);
     }
@@ -169,3 +168,54 @@ async function loadIndicadores(selectElement, createFn) {
 }
 
 waitForElement("#formNFCe\\:colaborador", initSelectIndicador);
+
+async function aplicarPontosIndicador(tipoVenda) {
+  console.log("[DEBUG] aplicarPontosIndicador chamado - tipo:", tipoVenda);
+
+  if (!window.indicadorSelecionadoId) {
+    console.log("[DEBUG] Nenhum indicador selecionado, abortando");
+    return;
+  }
+
+  const spanValor = document.querySelector("#formNFCe\\:totalVenda");
+  if (!spanValor) {
+    console.log("[DEBUG] Span de valor não encontrado");
+    return;
+  }
+
+  const valorText = spanValor.textContent;
+  const valorVenda = parseFloat(valorText.replace(/\./g, "").replace(",", "."));
+
+  if (!valorVenda || valorVenda <= 0) {
+    console.log("[DEBUG] Valor inválido, abortando");
+    return;
+  }
+
+  const referenciaVenda = `${tipoVenda}-${Date.now()}`;
+
+  try {
+    await window.adicionarPontos(window.indicadorSelecionadoId, valorVenda, referenciaVenda);
+    console.log(`Pontos aplicados! Indicador: ${window.indicadorSelecionadoId}, Valor: ${valorVenda}, Tipo: ${tipoVenda}`);
+  } catch (err) {
+    console.error("Erro ao aplicar pontos:", err);
+  }
+}
+
+function initVendaListeners() {
+  console.log("[DEBUG] initVendaListeners executado");
+
+  document.addEventListener("click", (event) => {
+    const btnPV = event.target.closest("#formNFCe\\:btn-finalizar-pv");
+    const btnNFCe = event.target.closest("#formNFCe\\:btn-finalizar-nfce");
+
+    if (btnPV) {
+      console.log("[DEBUG] Click detectado no botão PV");
+      aplicarPontosIndicador("PV");
+    } else if (btnNFCe) {
+      console.log("[DEBUG] Click detectado no botão NFCe");
+      aplicarPontosIndicador("NFCe");
+    }
+  });
+}
+
+initVendaListeners();
