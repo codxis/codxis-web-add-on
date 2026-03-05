@@ -29,7 +29,7 @@
   border-radius: 8px;
   min-width: 800px;
   max-width: 95vw;
-  max-height: 90vh;
+  max-height: 95vh;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   display: flex;
@@ -176,7 +176,7 @@
 .tabela-container {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 650px;
   min-height: 200px;
 }
 
