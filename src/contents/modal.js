@@ -1,13 +1,13 @@
 function createModal() {
-  const PONTOS_VALOR_REAIS = 0.50;
-  
+  const PONTOS_VALOR_REAIS = 0.5;
+
   function formatCurrency(value) {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
     }).format(value);
   }
-  
+
   const overlay = document.createElement("div");
   overlay.id = "custom-modal-overlay";
 
@@ -48,7 +48,7 @@ function renderCadastroForm() {
          <div class="subtitle-divider"> </div>
         </div>
 
-        <div class="col-12 col-md-12">
+        <div class="col-10 col-md-10">
           <label class="form-label">Nome*</label>
           <input 
             type="text" 
@@ -69,12 +69,32 @@ function renderCadastroForm() {
           />
         </div>
 
-        <div class="col-12 col-md-12">
+        <div class="col-10 col-md-10">
           <label class="form-label">Apelido</label>
           <input 
             type="text" 
             id="apelido" 
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+          />
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Data de Nascimento</label>
+          <input 
+            type="date" 
+            id="data_nascimento" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+          />
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Telefone</label>
+          <input 
+            type="text" 
+            id="telefone" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            maxlength="20"
+            placeholder="(00) 00000-0000"
           />
         </div>
       </div>
@@ -220,6 +240,25 @@ function renderEditarForm(indicador) {
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Data de Nascimento</label>
+          <input 
+            type="date" 
+            id="data_nascimento" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+          />
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label">Telefone</label>
+          <input 
+            type="text" 
+            id="telefone" 
+            class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
+            maxlength="20"
+          />
+        </div>
       </div>
 
       <div id="edit-error" class="error-message" style="display: none;"></div>
@@ -341,7 +380,7 @@ function renderExcluirConfirm(indicador) {
 function renderResgatarPontosForm(indicador) {
   const pontosAtuais = indicador.pontos || 0;
   const valorMaximo = pontosAtuais * PONTOS_VALOR_REAIS;
-  
+
   return `
     <div id="resgatar-pontos">
       <div class="col-12 subtitle-divider-margin">
@@ -425,36 +464,40 @@ function openCustomModal(type, data = null) {
       if (btnSalvar) btnSalvar.addEventListener("click", window.handleCadastro);
 
       const cpfInput = document.getElementById("cpf");
-      if (cpfInput) cpfInput.addEventListener("input", (e) => {
-        e.target.value = window.formatCPF(e.target.value);
-      });
+      if (cpfInput)
+        cpfInput.addEventListener("input", (e) => {
+          e.target.value = window.formatCPF(e.target.value);
+        });
     }
 
     if (type === "Consultar") {
       content.innerHTML = renderConsultarForm();
 
       const cpfInput = document.getElementById("filtro-cpf");
-      if (cpfInput) cpfInput.addEventListener("input", (e) => {
-        e.target.value = window.formatCPF(e.target.value);
-      });
+      if (cpfInput)
+        cpfInput.addEventListener("input", (e) => {
+          e.target.value = window.formatCPF(e.target.value);
+        });
 
       const btnToggleFiltros = document.getElementById("btnToggleFiltros");
-      if (btnToggleFiltros) btnToggleFiltros.addEventListener("click", () => {
-        const filtrosContainer = document.getElementById("filtros-container");
-        const btn = document.getElementById("btnToggleFiltros");
-        if (filtrosContainer && btn) {
-          if (filtrosContainer.style.display === "none") {
-            filtrosContainer.style.display = "block";
-            btn.textContent = "Ocultar Filtros";
-          } else {
-            filtrosContainer.style.display = "none";
-            btn.textContent = "Mostrar Filtros";
+      if (btnToggleFiltros)
+        btnToggleFiltros.addEventListener("click", () => {
+          const filtrosContainer = document.getElementById("filtros-container");
+          const btn = document.getElementById("btnToggleFiltros");
+          if (filtrosContainer && btn) {
+            if (filtrosContainer.style.display === "none") {
+              filtrosContainer.style.display = "block";
+              btn.textContent = "Ocultar Filtros";
+            } else {
+              filtrosContainer.style.display = "none";
+              btn.textContent = "Mostrar Filtros";
+            }
           }
-        }
-      });
+        });
 
       const btnConsultar = document.getElementById("btnConsultar");
-      if (btnConsultar) btnConsultar.addEventListener("click", window.handleConsultar);
+      if (btnConsultar)
+        btnConsultar.addEventListener("click", window.handleConsultar);
 
       window.carregarLista({ ativo: true });
       window.setupTabelaEventListeners();
@@ -465,12 +508,20 @@ function openCustomModal(type, data = null) {
 
       const nomeInput = document.getElementById("nome");
       const apelidoInput = document.getElementById("apelido");
+      const dataNascimentoInput = document.getElementById("data_nascimento");
+      const telefoneInput = document.getElementById("telefone");
       if (nomeInput) nomeInput.value = data.nome || "";
       if (apelidoInput) apelidoInput.value = data.apelido || "";
+      if (dataNascimentoInput)
+        dataNascimentoInput.value = data.data_nascimento || "";
+      if (telefoneInput) telefoneInput.value = data.telefone || "";
 
       const btnCancelar = document.getElementById("btnCancelarEditar");
       const btnSalvar = document.getElementById("btnSalvarEditar");
-      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
+      if (btnCancelar)
+        btnCancelar.addEventListener("click", () =>
+          openCustomModal("Consultar"),
+        );
       if (btnSalvar) btnSalvar.addEventListener("click", window.handleEditar);
     }
 
@@ -479,8 +530,12 @@ function openCustomModal(type, data = null) {
 
       const btnCancelar = document.getElementById("btnCancelarPontos");
       const btnSalvar = document.getElementById("btnSalvarPontos");
-      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
-      if (btnSalvar) btnSalvar.addEventListener("click", window.handleAdicionarPontos);
+      if (btnCancelar)
+        btnCancelar.addEventListener("click", () =>
+          openCustomModal("Consultar"),
+        );
+      if (btnSalvar)
+        btnSalvar.addEventListener("click", window.handleAdicionarPontos);
     }
 
     if (type === "Excluir" && data) {
@@ -488,8 +543,12 @@ function openCustomModal(type, data = null) {
 
       const btnCancelar = document.getElementById("btnCancelarExcluir");
       const btnConfirmar = document.getElementById("btnConfirmarExcluir");
-      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
-      if (btnConfirmar) btnConfirmar.addEventListener("click", window.handleExcluir);
+      if (btnCancelar)
+        btnCancelar.addEventListener("click", () =>
+          openCustomModal("Consultar"),
+        );
+      if (btnConfirmar)
+        btnConfirmar.addEventListener("click", window.handleExcluir);
     }
 
     if (type === "ResgatarPontos" && data) {
@@ -497,8 +556,12 @@ function openCustomModal(type, data = null) {
 
       const btnCancelar = document.getElementById("btnCancelarResgate");
       const btnConfirmar = document.getElementById("btnConfirmarResgate");
-      if (btnCancelar) btnCancelar.addEventListener("click", () => openCustomModal("Consultar"));
-      if (btnConfirmar) btnConfirmar.addEventListener("click", window.handleResgatarPontos);
+      if (btnCancelar)
+        btnCancelar.addEventListener("click", () =>
+          openCustomModal("Consultar"),
+        );
+      if (btnConfirmar)
+        btnConfirmar.addEventListener("click", window.handleResgatarPontos);
     }
 
     overlay.classList.add("active");

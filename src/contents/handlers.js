@@ -174,6 +174,8 @@ async function handleCadastro() {
   const cpfInput = document.getElementById("cpf");
   const cpf = cpfInput.value.trim();
   const apelido = document.getElementById("apelido").value.trim();
+  const dataNascimento = document.getElementById("data_nascimento").value;
+  const telefone = document.getElementById("telefone").value.trim();
 
   window.hideError();
 
@@ -194,7 +196,13 @@ async function handleCadastro() {
   btn.textContent = "Salvando...";
 
   try {
-    await window.cadastrarIndicador({ nome, cpf: cpfDigits, apelido });
+    await window.cadastrarIndicador({ 
+      nome, 
+      cpf: cpfDigits, 
+      apelido,
+      data_nascimento: dataNascimento || null,
+      telefone: telefone || null
+    });
 
     alert("Indicador cadastrado com sucesso!");
     invalidateCache();
@@ -236,6 +244,8 @@ async function handleEditar() {
   const id = document.getElementById("btnSalvarEditar").dataset.id;
   const nome = document.getElementById("nome").value.trim();
   const apelido = document.getElementById("apelido")?.value.trim() || "";
+  const dataNascimento = document.getElementById("data_nascimento")?.value || null;
+  const telefone = document.getElementById("telefone")?.value.trim() || null;
 
   const errorDiv = document.getElementById("edit-error");
   errorDiv.style.display = "none";
@@ -251,7 +261,12 @@ async function handleEditar() {
   btn.textContent = "Salvando...";
 
   try {
-    await window.atualizarIndicador(id, { nome, apelido });
+    await window.atualizarIndicador(id, { 
+      nome, 
+      apelido,
+      data_nascimento: dataNascimento,
+      telefone: telefone
+    });
 
     alert("Indicador atualizado com sucesso!");
     invalidateCache();
