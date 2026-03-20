@@ -1,5 +1,39 @@
 console.log("[DEBUG] content.js carregado");
 
+const originalFetch = window.fetch;
+window.fetch = async (...args) => {
+  const url = args[0]?.url || args[0];
+  const method = args[1]?.method || 'GET';
+  
+  console.log("[DEBUG] Fetch interceptado:", method, url);
+  
+  const response = await originalFetch(...args);
+  
+  const clone = response.clone();
+  clone.json().then(data => {
+    console.log("[DEBUG] Resposta fetch:", url, data);
+  }).catch(() => {});
+  
+  return response;
+};
+
+const originalXHR = window.XMLHttpRequest;
+window.XMLHttpRequest = function() {
+  const xhr = new originalXHR();
+  const originalOpen = xhr.open;
+  
+  xhr.open = function(...args) {
+    console.log("[DEBUG] XHR aberto:", args[1], args[0]);
+    return originalOpen.apply(this, args);
+  };
+  
+  xhr.addEventListener("load", () => {
+    console.log("[DEBUG] XHR carregado:", xhr.responseURL, xhr.response);
+  });
+  
+  return xhr;
+};
+
 window.indicadorSelecionadoId = null;
 
 function createSearchableSelect({

@@ -1,4 +1,4 @@
-const PONTOS_VALOR_REAIS = 0.50;
+const PONTOS_VALOR_REAIS = 0.5;
 
 const indicadoresCache = {
   data: null,
@@ -41,7 +41,7 @@ function getFiltros() {
 
 function renderTabelaIndicadores(data) {
   const tbody = document.getElementById("tabela-corpo");
-  
+
   if (!data || !data.length) {
     tbody.innerHTML = `
       <tr class="empty-row">
@@ -51,11 +51,12 @@ function renderTabelaIndicadores(data) {
     return;
   }
 
-  tbody.innerHTML = data.map((indicador) => {
-    const pontos = indicador.pontos || 0;
-    const valorReais = pontos * PONTOS_VALOR_REAIS;
+  tbody.innerHTML = data
+    .map((indicador) => {
+      const pontos = indicador.pontos || 0;
+      const valorReais = pontos * PONTOS_VALOR_REAIS;
 
-    return `
+      return `
       <tr data-id="${indicador.id}">
         <td>
           <div class="indicador-nome">
@@ -78,7 +79,8 @@ function renderTabelaIndicadores(data) {
         </td>
       </tr>
     `;
-  }).join("");
+    })
+    .join("");
 }
 
 function setupTabelaEventListeners() {
@@ -103,7 +105,7 @@ function setupTabelaEventListeners() {
       return;
     }
 
-      if (acaoItem && dropdown) {
+    if (acaoItem && dropdown) {
       const action = acaoItem.dataset.action;
       const id = dropdown.dataset.id;
       closeAllAcoesDropdowns();
@@ -131,11 +133,15 @@ async function carregarLista(filtros = {}) {
   const tbody = document.getElementById("tabela-corpo");
 
   errorDiv.style.display = "none";
-  
-  const isDefaultQuery = filtros.ativo === true && 
-    !filtros.nome && !filtros.cpf && !filtros.apelido && 
-    !filtros.pontos_min && !filtros.pontos_max;
-  
+
+  const isDefaultQuery =
+    filtros.ativo === true &&
+    !filtros.nome &&
+    !filtros.cpf &&
+    !filtros.apelido &&
+    !filtros.pontos_min &&
+    !filtros.pontos_max;
+
   if (isDefaultQuery && isCacheValid()) {
     renderTabelaIndicadores(indicadoresCache.data || []);
     return;
@@ -149,14 +155,14 @@ async function carregarLista(filtros = {}) {
 
   try {
     const response = await window.listarIndicadores(filtros);
-    
+
     if (isDefaultQuery) {
       setCache(response.data || []);
       response.data?.forEach((ind) => {
         indicadorCache[ind.id] = ind;
       });
     }
-    
+
     renderTabelaIndicadores(response.data || []);
   } catch (err) {
     errorDiv.textContent = "Erro ao buscar indicadores: " + err.message;
@@ -179,16 +185,19 @@ async function handleCadastro() {
 
   window.hideError();
 
-  if (!nome || !cpf) {
-    window.showError("Nome e CPF são obrigatórios.");
+  if (!nome) {
+    window.showError("Nome é obrigatórios.");
     return;
   }
 
   const cpfDigits = cpf.replace(/\D/g, "");
-  if (!window.validateCPF(cpfDigits)) {
-    window.showError("CPF inválido.");
-    return;
-  }
+  // if (!window.validateCPF(cpfDigits)) {
+  //   if (cpfDigits === "") {
+  //     return;
+  //   }
+  //   window.showError("CPF inválido.");
+  //   return;
+  // }
 
   const btn = document.getElementById("btnSalvar");
   btn.disabled = true;
@@ -196,12 +205,12 @@ async function handleCadastro() {
   btn.textContent = "Salvando...";
 
   try {
-    await window.cadastrarIndicador({ 
-      nome, 
-      cpf: cpfDigits, 
+    await window.cadastrarIndicador({
+      nome,
+      cpf: cpfDigits,
       apelido,
       data_nascimento: dataNascimento || null,
-      telefone: telefone || null
+      telefone: telefone || null,
     });
 
     alert("Indicador cadastrado com sucesso!");
@@ -244,7 +253,8 @@ async function handleEditar() {
   const id = document.getElementById("btnSalvarEditar").dataset.id;
   const nome = document.getElementById("nome").value.trim();
   const apelido = document.getElementById("apelido")?.value.trim() || "";
-  const dataNascimento = document.getElementById("data_nascimento")?.value || null;
+  const dataNascimento =
+    document.getElementById("data_nascimento")?.value || null;
   const telefone = document.getElementById("telefone")?.value.trim() || null;
 
   const errorDiv = document.getElementById("edit-error");
@@ -261,11 +271,11 @@ async function handleEditar() {
   btn.textContent = "Salvando...";
 
   try {
-    await window.atualizarIndicador(id, { 
-      nome, 
+    await window.atualizarIndicador(id, {
+      nome,
       apelido,
       data_nascimento: dataNascimento,
-      telefone: telefone
+      telefone: telefone,
     });
 
     alert("Indicador atualizado com sucesso!");
@@ -285,17 +295,20 @@ async function handleEditar() {
 
 function adicionarPontosIndicador(id) {
   closeAllAcoesDropdowns();
-  
+
   const indicador = indicadorCache[id];
   if (indicador) {
     window.openCustomModal("AdicionarPontos", indicador);
   } else {
-    window.buscarIndicador(id).then((data) => {
-      indicadorCache[id] = data;
-      window.openCustomModal("AdicionarPontos", data);
-    }).catch((err) => {
-      console.error("Erro ao buscar indicador:", err);
-    });
+    window
+      .buscarIndicador(id)
+      .then((data) => {
+        indicadorCache[id] = data;
+        window.openCustomModal("AdicionarPontos", data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar indicador:", err);
+      });
   }
 }
 
@@ -320,7 +333,9 @@ async function handleAdicionarPontos() {
   try {
     const resultado = await window.adicionarPontos(id, valorVenda, referencia);
 
-    alert(`Pontos adicionados! \nValor da venda: ${formatCurrency(valorVenda)}\nPontos creditados: ${resultado.pontos_creditados}\nTotal de pontos: ${resultado.total_pontos}`);
+    alert(
+      `Pontos adicionados! \nValor da venda: ${formatCurrency(valorVenda)}\nPontos creditados: ${resultado.pontos_creditados}\nTotal de pontos: ${resultado.total_pontos}`,
+    );
     invalidateCache();
 
     window.openCustomModal("Consultar");
@@ -341,28 +356,34 @@ function excluirIndicadorConfirm(id) {
   if (indicador) {
     window.openCustomModal("Excluir", indicador);
   } else {
-    window.buscarIndicador(id).then((data) => {
-      indicadorCache[id] = data;
-      window.openCustomModal("Excluir", data);
-    }).catch((err) => {
-      console.error("Erro ao buscar indicador:", err);
-    });
+    window
+      .buscarIndicador(id)
+      .then((data) => {
+        indicadorCache[id] = data;
+        window.openCustomModal("Excluir", data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar indicador:", err);
+      });
   }
 }
 
 function resgatarPontosIndicador(id) {
   closeAllAcoesDropdowns();
-  
+
   const indicador = indicadorCache[id];
   if (indicador) {
     window.openCustomModal("ResgatarPontos", indicador);
   } else {
-    window.buscarIndicador(id).then((data) => {
-      indicadorCache[id] = data;
-      window.openCustomModal("ResgatarPontos", data);
-    }).catch((err) => {
-      console.error("Erro ao buscar indicador:", err);
-    });
+    window
+      .buscarIndicador(id)
+      .then((data) => {
+        indicadorCache[id] = data;
+        window.openCustomModal("ResgatarPontos", data);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar indicador:", err);
+      });
   }
 }
 
@@ -395,7 +416,9 @@ async function handleResgatarPontos() {
   try {
     const resultado = await window.rescatarPontos(id, pontos, observacao);
 
-    alert(`Resgate realizado com sucesso! \nPontos resgatados: ${resultado.pontos_resgatados}\nValor em R$: ${formatCurrency(resultado.valor_reais)}\nSaldo restante: ${resultado.saldo_restante}`);
+    alert(
+      `Resgate realizado com sucesso! \nPontos resgatados: ${resultado.pontos_resgatados}\nValor em R$: ${formatCurrency(resultado.valor_reais)}\nSaldo restante: ${resultado.saldo_restante}`,
+    );
     invalidateCache();
 
     delete indicadorCache[id];

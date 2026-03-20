@@ -50,19 +50,19 @@ function renderCadastroForm() {
 
         <div class="col-10 col-md-10">
           <label class="form-label">Nome*</label>
-          <input 
-            type="text" 
-            id="nome" 
+          <input
+            type="text"
+            id="nome"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="150"
           />
         </div>
 
         <div class="col-12 col-md-6">
-          <label class="form-label">CPF*</label>
-          <input 
-            type="text" 
-            id="cpf" 
+          <label class="form-label">CPF</label>
+          <input
+            type="text"
+            id="cpf"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="14"
             placeholder="000.000.000-00"
@@ -71,27 +71,27 @@ function renderCadastroForm() {
 
         <div class="col-10 col-md-10">
           <label class="form-label">Apelido</label>
-          <input 
-            type="text" 
-            id="apelido" 
+          <input
+            type="text"
+            id="apelido"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
 
         <div class="col-12 col-md-6">
           <label class="form-label">Data de Nascimento</label>
-          <input 
-            type="date" 
-            id="data_nascimento" 
+          <input
+            type="date"
+            id="data_nascimento"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
 
         <div class="col-12 col-md-6">
           <label class="form-label">Telefone</label>
-          <input 
-            type="text" 
-            id="telefone" 
+          <input
+            type="text"
+            id="telefone"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="20"
             placeholder="(00) 00000-0000"
@@ -102,7 +102,7 @@ function renderCadastroForm() {
       <div id="cadastro-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
-        <button 
+        <button
           id="btnSalvar"
           class="ui-button ui-widget ui-state-default ui-corner-all"
         >
@@ -131,18 +131,18 @@ function renderConsultarForm() {
         <div class="filtros-row">
           <div class="filtro-item">
             <label class="form-label">Nome</label>
-            <input 
-              type="text" 
-              id="filtro-nome" 
+            <input
+              type="text"
+              id="filtro-nome"
               class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
               placeholder="Filtrar por nome"
             />
           </div>
           <div class="filtro-item">
             <label class="form-label">CPF</label>
-            <input 
-              type="text" 
-              id="filtro-cpf" 
+            <input
+              type="text"
+              id="filtro-cpf"
               class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
               placeholder="000.000.000-00"
               maxlength="14"
@@ -150,9 +150,9 @@ function renderConsultarForm() {
           </div>
           <div class="filtro-item">
             <label class="form-label">Apelido</label>
-            <input 
-              type="text" 
-              id="filtro-apelido" 
+            <input
+              type="text"
+              id="filtro-apelido"
               class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
               placeholder="Filtrar por apelido"
             />
@@ -161,9 +161,9 @@ function renderConsultarForm() {
         <div class="filtros-row">
           <div class="filtro-item">
             <label class="form-label">Pontos Mín</label>
-            <input 
-              type="number" 
-              id="filtro-pontos-min" 
+            <input
+              type="number"
+              id="filtro-pontos-min"
               class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
               placeholder="0"
               min="0"
@@ -171,9 +171,9 @@ function renderConsultarForm() {
           </div>
           <div class="filtro-item">
             <label class="form-label">Pontos Máx</label>
-            <input 
-              type="number" 
-              id="filtro-pontos-max" 
+            <input
+              type="number"
+              id="filtro-pontos-max"
               class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
               placeholder="999999"
               min="0"
@@ -181,8 +181,8 @@ function renderConsultarForm() {
           </div>
         </div>
         <div class="filtros-actions">
-          <button 
-            id="btnConsultar" 
+          <button
+            id="btnConsultar"
             class="ui-button ui-widget ui-state-default ui-corner-all"
           >
             Consultar
@@ -224,9 +224,9 @@ function renderEditarForm(indicador) {
       <div class="form-body">
         <div class="col-12 col-md-12">
           <label class="form-label">Nome*</label>
-          <input 
-            type="text" 
-            id="nome" 
+          <input
+            type="text"
+            id="nome"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="150"
           />
@@ -234,27 +234,27 @@ function renderEditarForm(indicador) {
 
         <div class="col-12 col-md-12">
           <label class="form-label">Apelido</label>
-          <input 
-            type="text" 
-            id="apelido" 
+          <input
+            type="text"
+            id="apelido"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
 
         <div class="col-12 col-md-6">
           <label class="form-label">Data de Nascimento</label>
-          <input 
-            type="date" 
-            id="data_nascimento" 
+          <input
+            type="date"
+            id="data_nascimento"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
           />
         </div>
 
         <div class="col-12 col-md-6">
           <label class="form-label">Telefone</label>
-          <input 
-            type="text" 
-            id="telefone" 
+          <input
+            type="text"
+            id="telefone"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             maxlength="20"
           />
@@ -264,14 +264,14 @@ function renderEditarForm(indicador) {
       <div id="edit-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
-        <button 
+        <button
           id="btnCancelarEditar"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           style="margin-right: 10px;"
         >
           Cancelar
         </button>
-        <button 
+        <button
           id="btnSalvarEditar"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           data-id="${indicador.id}"
@@ -294,9 +294,9 @@ function renderAdicionarPontosForm(indicador) {
       <div class="form-body">
         <div class="col-12 col-md-12">
           <label class="form-label">Valor da Venda (R$)*</label>
-          <input 
-            type="number" 
-            id="pontos-valor" 
+          <input
+            type="number"
+            id="pontos-valor"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             placeholder="0,00"
             min="0.01"
@@ -306,15 +306,15 @@ function renderAdicionarPontosForm(indicador) {
 
         <div class="col-12 col-md-12">
           <label class="form-label">Referência da Venda</label>
-          <input 
-            type="text" 
-            id="pontos-referencia" 
+          <input
+            type="text"
+            id="pontos-referencia"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             placeholder="Código ou número da venda"
             maxlength="100"
           />
         </div>
-        
+
         <div class="pontos-info">
           <small>1 ponto a cada R$ 100,00 (1%) do valor líquido</small>
         </div>
@@ -323,14 +323,14 @@ function renderAdicionarPontosForm(indicador) {
       <div id="pontos-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
-        <button 
+        <button
           id="btnCancelarPontos"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           style="margin-right: 10px;"
         >
           Cancelar
         </button>
-        <button 
+        <button
           id="btnSalvarPontos"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           data-id="${indicador.id}"
@@ -358,14 +358,14 @@ function renderExcluirConfirm(indicador) {
       <div id="excluir-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
-        <button 
+        <button
           id="btnCancelarExcluir"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           style="margin-right: 10px;"
         >
           Cancelar
         </button>
-        <button 
+        <button
           id="btnConfirmarExcluir"
           class="ui-button ui-widget ui-state-default ui-corner-all ui-button-danger"
           data-id="${indicador.id}"
@@ -396,9 +396,9 @@ function renderResgatarPontosForm(indicador) {
       <div class="form-body">
         <div class="col-12 col-md-12">
           <label class="form-label">Pontos a Resgatar*</label>
-          <input 
-            type="number" 
-            id="resgate-pontos" 
+          <input
+            type="number"
+            id="resgate-pontos"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             placeholder="0"
             min="0.01"
@@ -409,15 +409,15 @@ function renderResgatarPontosForm(indicador) {
 
         <div class="col-12 col-md-12">
           <label class="form-label">Observação</label>
-          <input 
-            type="text" 
-            id="resgate-observacao" 
+          <input
+            type="text"
+            id="resgate-observacao"
             class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all form-input"
             placeholder="Observação opcional"
             maxlength="255"
           />
         </div>
-        
+
         <div class="pontos-info">
           <small>1 ponto = R$0,50</small>
         </div>
@@ -426,14 +426,14 @@ function renderResgatarPontosForm(indicador) {
       <div id="resgate-error" class="error-message" style="display: none;"></div>
 
       <div class="form-footer">
-        <button 
+        <button
           id="btnCancelarResgate"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           style="margin-right: 10px;"
         >
           Cancelar
         </button>
-        <button 
+        <button
           id="btnConfirmarResgate"
           class="ui-button ui-widget ui-state-default ui-corner-all"
           data-id="${indicador.id}"
