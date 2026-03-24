@@ -1,0 +1,25 @@
+{
+  "name": "indicador-pintores-update-server",
+  "version": "1.0.0",
+  "description": "Servidor de updates auto-hospedado para extensão Indicador de Pintores",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "package": "tsx src/package-extension.ts",
+    "package:build": "npm run build && npm run package",
+    "status": "tsx src/package-extension.ts status",
+    "generate-keys": "tsx src/package-extension.ts generate-keys"
+  },
+  "dependencies": {
+    "fastify": "^4.28.0",
+    "@fastify/cors": "^9.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.11.0"
+  }
+}

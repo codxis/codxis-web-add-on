@@ -1,0 +1,19 @@
+# Extension keys (NUNCA commit these!)
+*.pem
+*.crx
+
+# Server
+server/node_modules/
+server/dist/
+server/*.log
+server/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

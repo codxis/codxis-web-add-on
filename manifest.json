@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "version": "1.0",
+  "version": "1.0.0",
   "name": "Indicador de Pintores",
   "description": "Adiciona a funcionalidade de registrar o usuário que indicou uma venda no Codxis Web.",
+  "update_url": "https://SEU-SERVIDOR.COM/update.xml",
   "action": {
     "default_popup": "src/popup/index.html"
   },
