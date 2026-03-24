@@ -1,6 +1,4 @@
 # Extension keys (NUNCA commit these!)
-*.pem
-*.crx
 
 # Server
 server/node_modules/
