@@ -25,7 +25,7 @@ await fastify.register(cors, {
 });
 
 const CRX_FILE = "extension.crx";
-const EXTENSION_DIR = join(__dirname, "..", "..");
+const EXTENSION_DIR = join(__dirname, "extension");
 const PUBLIC_DIR = join(__dirname, "..", "public");
 
 // Lê a versão atual do manifest
