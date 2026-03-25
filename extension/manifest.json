@@ -4,35 +4,56 @@
   "name": "Indicador de Pintores",
   "description": "Adiciona a funcionalidade de registrar o usuário que indicou uma venda no Codxis Web.",
   "update_url": "https://extension-one-psi.vercel.app/updates.xml",
+
   "action": {
     "default_popup": "src/popup/index.html"
   },
+
+  "background": {
+    "service_worker": "src/background/service-worker.js"
+  },
+
   "content_scripts": [
     {
       "matches": [
-        "https://web.codxis.api.br/sistema/pages/privado/nfce/emissao/pdv/*"
+        "https://web.codxis.api.br/sistema/pages/privado/nfce/emissao/pdv/*",
+        "https://web.codxis.api.br/sistema/pages/privado/*"
       ],
-      "js": [
-        "src/shared/constants.js",
-        "src/shared/api.js",
-        "src/contents/content.js"
-      ],
-      "css": ["src/css/custom-select.css"]
-    },
+      "js": ["src/background/dynamic-loader.js"],
+      "run_at": "document_start"
+    }
+  ],
+
+  "permissions": [
+    "activeTab",
+    "storage",
+    "unlimitedStorage",
+    "scripting",
+    "alarms",
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "https://web.codxis.api.br/*",
+    "https://iofeislqynfuerypxrpt.supabase.co/*",
+    "https://extension-one-psi.vercel.app/*"
+  ],
+
+  "web_accessible_resources": [
     {
-      "matches": ["https://web.codxis.api.br/sistema/pages/privado/*"],
-      "js": [
+      "resources": [
         "src/shared/constants.js",
         "src/shared/api.js",
+        "src/contents/content.js",
         "src/contents/utils.js",
         "src/contents/handlers.js",
         "src/contents/modal.js",
         "src/contents/menu.js",
-        "src/contents/create-referrer.js"
+        "src/contents/create-referrer.js",
+        "src/css/modal.css",
+        "src/css/custom-select.css"
       ],
-      "css": ["src/css/modal.css"]
+      "matches": ["https://web.codxis.api.br/*"]
     }
-  ],
-  "permissions": ["activeTab", "storage", "scripting"],
-  "host_permissions": ["http://iofeislqynfuerypxrpt.supabase.co/*"]
+  ]
 }
