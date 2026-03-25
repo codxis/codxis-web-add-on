@@ -126,7 +126,7 @@ fastify.get("/version", async (request, reply) => {
     version: getCurrentVersion(),
     extensionId: getExtensionId(),
     crxUrl: `/${CRX_FILE}`,
-    updateXmlUrl: "/update.xml",
+    updateXmlUrl: "/updates.xml",
   };
 });
 
@@ -173,6 +173,7 @@ fastify.post("/package", async (request, reply) => {
 });
 
 fastify.get("/", async (request, reply) => {
+  console.log(EXTENSION_DIR);
   return {
     name: "Indicador de Pintores - Update Server",
     endpoints: {
@@ -180,6 +181,7 @@ fastify.get("/", async (request, reply) => {
       crxDownload: `/${CRX_FILE}`,
       version: "/version",
       package: "POST /package",
+      extensionDir: EXTENSION_DIR,
     },
     currentVersion: getCurrentVersion(),
     extensionId: getExtensionId(),
