@@ -15,7 +15,7 @@ await fastify.register(cors, {
   methods: ["GET", "POST"],
 });
 
-const CRX_FILE = "indicador-pintores.crx";
+const CRX_FILE = "extension.crx";
 const EXTENSION_DIR = join(__dirname, "..", "..");
 const PUBLIC_DIR = join(__dirname, "..", "public");
 
@@ -66,7 +66,7 @@ function getExtensionId(): string {
 }
 
 function generateUpdateXml(version: string, extensionId: string): string {
-  const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+  const baseUrl = process.env.BASE_URL || "http://localhost:3333";
 
   return `<?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
@@ -79,16 +79,17 @@ function generateUpdateXml(version: string, extensionId: string): string {
 </gupdate>`;
 }
 
-fastify.get("/update.xml", async (request, reply) => {
+fastify.get("/updates.xml", async (request, reply) => {
   const version = getCurrentVersion();
-  const extensionId = getExtensionId();
+  // const extensionId = getExtensionId();
+  const extensionId = "fpdagocpdimcamolfcicljajmhcbfmjd";
   const xml = generateUpdateXml(version, extensionId);
 
   reply.header("Content-Type", "application/xml");
   return xml;
 });
 
-fastify.get("/update.xml/:id", async (request, reply) => {
+fastify.get("/updates.xml/:id", async (request, reply) => {
   const { id } = request.params as { id: string };
   const version = getCurrentVersion();
 
@@ -96,7 +97,7 @@ fastify.get("/update.xml/:id", async (request, reply) => {
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
   <app appid='${id}'>
     <updatecheck
-      codebase='${process.env.BASE_URL || "http://localhost:3000"}/${CRX_FILE}'
+      codebase='${process.env.BASE_URL || "http://localhost:3333"}/${CRX_FILE}'
       version='${version}'
     />
   </app>
