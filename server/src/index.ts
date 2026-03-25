@@ -121,40 +121,6 @@ fastify.get("/download-zip", async (request, reply) => {
   return reply.send(zipBuffer);
 });
 
-// ─── Endpoints existentes (CRX / updates.xml) ───────────────────────────────
-fastify.get("/updates.xml", async (request, reply) => {
-  const version = getCurrentVersion();
-  const extensionId = "fpdagocpdimcamolfcicljajmhcbfmjd";
-  const baseUrl = process.env.BASE_URL || "http://localhost:3333";
-
-  const xml = `<?xml version='1.0' encoding='UTF-8'?>
-<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-  <app appid='${extensionId}'>
-    <updatecheck
-      codebase='${baseUrl}/${CRX_FILE}'
-      version='${version}'
-    />
-  </app>
-</gupdate>`;
-
-  reply.header("Content-Type", "application/xml");
-  return xml;
-});
-
-fastify.get(`/${CRX_FILE}`, async (request, reply) => {
-  const crxPath = join(PUBLIC_DIR, CRX_FILE);
-
-  if (!existsSync(crxPath)) {
-    reply.code(404);
-    return { error: "CRX file not found. Run npm run package first." };
-  }
-
-  const crxBuffer = readFileSync(crxPath);
-  reply.header("Content-Type", "application/x-chrome-extension");
-  reply.header("Content-Disposition", `attachment; filename="${CRX_FILE}"`);
-  return crxBuffer;
-});
-
 // ─── Health check ────────────────────────────────────────────────────────────
 fastify.get("/", async () => {
   return {

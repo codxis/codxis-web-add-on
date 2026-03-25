@@ -1,212 +1,213 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Indicador de Pintores</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Indicador de Pintores</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-      body {
-        width: 300px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 13px;
-        background: #fff;
-        color: #1a1a1a;
-      }
+            body {
+                width: 300px;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 13px;
+                background: #fff;
+                color: #1a1a1a;
+            }
 
-      .header {
-        background: #282e3f;
-        color: #fff;
-        padding: 14px 16px;
-      }
+            .header {
+                background: #282e3f;
+                color: #fff;
+                padding: 14px 16px;
+            }
 
-      .header h1 {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 2px;
-      }
+            .header h1 {
+                font-size: 15px;
+                font-weight: 600;
+                margin-bottom: 2px;
+            }
 
-      .header p {
-        font-size: 11px;
-        opacity: 0.7;
-      }
+            .header p {
+                font-size: 11px;
+                opacity: 0.7;
+            }
 
-      .section {
-        padding: 14px 16px;
-        border-bottom: 1px solid #eee;
-      }
+            .section {
+                padding: 14px 16px;
+                border-bottom: 1px solid #eee;
+            }
 
-      .section:last-child {
-        border-bottom: none;
-      }
+            .section:last-child {
+                border-bottom: none;
+            }
 
-      .section-title {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #888;
-        margin-bottom: 10px;
-      }
+            .section-title {
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #888;
+                margin-bottom: 10px;
+            }
 
-      .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-      }
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
 
-      .info-row:last-child {
-        margin-bottom: 0;
-      }
+            .info-row:last-child {
+                margin-bottom: 0;
+            }
 
-      .info-label {
-        color: #666;
-      }
+            .info-label {
+                color: #666;
+            }
 
-      .info-value {
-        font-weight: 500;
-        color: #282e3f;
-      }
+            .info-value {
+                font-weight: 500;
+                color: #282e3f;
+            }
 
-      .badge {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-      }
+            .badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 10px;
+                font-size: 11px;
+                font-weight: 600;
+            }
 
-      .badge-ok {
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-      .badge-update {
-        background: #fff3e0;
-        color: #e65100;
-      }
-      .badge-checking {
-        background: #e3f2fd;
-        color: #1565c0;
-      }
-      .badge-error {
-        background: #fce4ec;
-        color: #b71c1c;
-      }
+            .badge-ok {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+            .badge-update {
+                background: #fff3e0;
+                color: #e65100;
+            }
+            .badge-checking {
+                background: #e3f2fd;
+                color: #1565c0;
+            }
+            .badge-error {
+                background: #fce4ec;
+                color: #b71c1c;
+            }
 
-      .btn {
-        display: block;
-        width: 100%;
-        padding: 9px 14px;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        text-align: center;
-        transition: opacity 0.15s;
-      }
+            .btn {
+                display: block;
+                width: 100%;
+                padding: 9px 14px;
+                border: none;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                text-align: center;
+                transition: opacity 0.15s;
+            }
 
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
+            .btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
 
-      .btn-primary {
-        background: #282e3f;
-        color: #fff;
-      }
+            .btn-primary {
+                background: #282e3f;
+                color: #fff;
+            }
 
-      .btn-primary:hover:not(:disabled) {
-        opacity: 0.85;
-      }
+            .btn-primary:hover:not(:disabled) {
+                opacity: 0.85;
+            }
 
-      .btn-secondary {
-        background: #f0f2f5;
-        color: #282e3f;
-        margin-top: 8px;
-      }
+            .btn-secondary {
+                background: #f0f2f5;
+                color: #282e3f;
+                margin-top: 8px;
+            }
 
-      .btn-secondary:hover:not(:disabled) {
-        background: #e0e3e8;
-      }
+            .btn-secondary:hover:not(:disabled) {
+                background: #e0e3e8;
+            }
 
-      #update-log {
-        margin-top: 10px;
-        font-size: 11px;
-        color: #555;
-        background: #f8f8f8;
-        border-radius: 4px;
-        padding: 8px 10px;
-        max-height: 80px;
-        overflow-y: auto;
-        display: none;
-        line-height: 1.6;
-      }
+            #update-log {
+                margin-top: 10px;
+                font-size: 11px;
+                color: #555;
+                background: #f8f8f8;
+                border-radius: 4px;
+                padding: 8px 10px;
+                max-height: 80px;
+                overflow-y: auto;
+                display: none;
+                line-height: 1.6;
+            }
 
-      .spinner {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border: 2px solid #ccc;
-        border-top-color: #282e3f;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-        margin-right: 6px;
-        vertical-align: middle;
-      }
+            .spinner {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border: 2px solid #ccc;
+                border-top-color: #282e3f;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                margin-right: 6px;
+                vertical-align: middle;
+            }
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="header">
-      <h1>Indicador de Pintores</h1>
-      <p>Extensão Codxis Web</p>
-    </div>
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Indicador de Pintores 2</h1>
+            <p>Extensão Codxis Web</p>
+        </div>
 
-    <div class="section">
-      <div class="section-title">Versão</div>
-      <div class="info-row">
-        <span class="info-label">Instalada</span>
-        <span class="info-value" id="installed-version">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Manifesto</span>
-        <span class="info-value" id="manifest-version">—</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Última verificação</span>
-        <span class="info-value" id="last-check">Nunca</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Status</span>
-        <span class="badge badge-checking" id="update-status"
-          >Verificando...</span
-        >
-      </div>
-    </div>
+        <div class="section">
+            <div class="section-title">Versão</div>
+            <div class="info-row">
+                <span class="info-label">Instalada</span>
+                <span class="info-value" id="installed-version">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Manifesto</span>
+                <span class="info-value" id="manifest-version">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Última verificação</span>
+                <span class="info-value" id="last-check">Nunca</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Status</span>
+                <span class="badge badge-checking" id="update-status"
+                    >Verificando...</span
+                >
+            </div>
+        </div>
 
-    <div class="section">
-      <div class="section-title">Atualização</div>
-      <button class="btn btn-primary" id="btn-check-update">
-        Verificar Atualização
-      </button>
-      <button class="btn btn-secondary" id="btn-open-codxis">
-        Abrir Codxis
-      </button>
-      <div id="update-log"></div>
-    </div>
+        <div class="section">
+            <div class="section-title">Atualização</div>
+            <button class="btn btn-primary" id="btn-check-update">
+                Verificar Atualização
+            </button>
+            <button class="btn btn-secondary" id="btn-open-codxis">
+                Abrir Codxis
+            </button>
+            <div id="update-log"></div>
+        </div>
 
-    <script src="./popup.js"></script>
-  </body>
+        <script src="./popup.js"></script>
+    </body>
 </html>
