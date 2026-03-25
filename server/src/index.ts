@@ -18,6 +18,7 @@ await fastify.register(cors, {
 const CRX_FILE = "extension.crx";
 const EXTENSION_DIR = join(__dirname, "..", "..");
 const PUBLIC_DIR = join(__dirname, "..", "public");
+const VERSION = "1.0.1";
 
 interface UpdateManifest {
   version: string;
@@ -80,7 +81,7 @@ function generateUpdateXml(version: string, extensionId: string): string {
 }
 
 fastify.get("/updates.xml", async (request, reply) => {
-  const version = getCurrentVersion();
+  const version = VERSION;
   // const extensionId = getExtensionId();
   const extensionId = "fpdagocpdimcamolfcicljajmhcbfmjd";
   const xml = generateUpdateXml(version, extensionId);
@@ -91,7 +92,7 @@ fastify.get("/updates.xml", async (request, reply) => {
 
 fastify.get("/updates.xml/:id", async (request, reply) => {
   const { id } = request.params as { id: string };
-  const version = getCurrentVersion();
+  const version = VERSION;
 
   const xml = `<?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
@@ -123,7 +124,7 @@ fastify.get(`/${CRX_FILE}`, async (request, reply) => {
 
 fastify.get("/version", async (request, reply) => {
   return {
-    version: getCurrentVersion(),
+    version: VERSION,
     extensionId: getExtensionId(),
     crxUrl: `/${CRX_FILE}`,
     updateXmlUrl: "/updates.xml",
