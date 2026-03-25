@@ -30,13 +30,14 @@ const PUBLIC_DIR = join(__dirname, "..", "public");
 
 // Lê a versão atual do manifest
 function getCurrentVersion(): string {
-  try {
-    const manifestPath = join(EXTENSION_DIR, "manifest.json");
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
-    return manifest.version || "1.0.0";
-  } catch {
-    return "1.0.0";
-  }
+  // try {
+  //   const manifestPath = join(EXTENSION_DIR, "manifest.json");
+  //   const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+  //   return manifest.version || "1.0.0";
+  // } catch {
+  //   return "1.0.0";
+  // }
+  return "1.0.2";
 }
 
 // API Key simples — em produção use variável de ambiente
