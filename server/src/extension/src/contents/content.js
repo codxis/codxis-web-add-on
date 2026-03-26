@@ -1,5 +1,9 @@
 console.log("[DEBUG] content.js carregado");
 console.log("[AUTO-UPDATER]");
+console.log(
+  "%c=== SCRIPT REMOTO CARREGADO COM SUCESSO! ===",
+  "color: #00ff00; font-size: 16px; font-weight: bold;",
+);
 
 const originalFetch = window.fetch;
 window.fetch = async (...args) => {

@@ -1,5 +1,5 @@
 const UPDATER_CONFIG = {
-  CHECK_INTERVAL_MS: 3 * 60 * 60 * 1000, // 3 horas
+  CHECK_INTERVAL_MS: 6 * 60 * 60 * 1000, // 6 horas
   VERSION_ENDPOINT: `${self.CONFIG?.API_BASE_UPDATE || "https://extension-one-psi.vercel.app"}/version`,
   DOWNLOAD_ENDPOINT: `${self.CONFIG?.API_BASE_UPDATE || "https://extension-one-psi.vercel.app"}/download-zip`,
   STORAGE_KEY_VERSION: "updater_installed_version",
@@ -195,6 +195,57 @@ function isNewerVersion(remote, local) {
 
 // Escuta mensagens de content scripts e popup
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // Content script delega injeção ao background para contornar CSP
+  if (message.type === "INJECT_UPDATED_SCRIPTS") {
+    const tabId = sender.tab?.id;
+    if (!tabId) return;
+
+    const { jsFiles, cssFiles } = message;
+
+    chrome.storage.local.get("updater_files").then(async (result) => {
+      const files = result["updater_files"] || {};
+
+      // Injeta CSS como strings via chrome.scripting
+      for (const filePath of cssFiles) {
+        const css = files[filePath];
+        if (!css) continue;
+        await chrome.scripting
+          .insertCSS({
+            target: { tabId },
+            css,
+          })
+          .catch(console.error);
+      }
+
+      // Injeta JS criando uma tag <script> diretamente na página (world: MAIN).
+      // Isso burla o bloqueio de 'eval()' imposto pelo Manifest V3 na extensão.
+      for (const filePath of jsFiles) {
+        const code = files[filePath];
+        if (!code) continue;
+
+        await chrome.scripting
+          .executeScript({
+            target: { tabId },
+            world: "MAIN",
+            func: (src) => {
+              const script = document.createElement("script");
+              script.textContent = src;
+              (document.head || document.documentElement).appendChild(script);
+              script.remove(); // Limpa a tag para não poluir o DOM
+            },
+            args: [code],
+          })
+          .catch((e) =>
+            console.error("[Updater] executeScript falhou para", filePath, e),
+          );
+      }
+
+      console.log("[Updater] Scripts atualizados injetados na tab", tabId);
+    });
+
+    return false;
+  }
+
   if (message.type === "CHECK_UPDATE_NOW") {
     runUpdateCheck()
       .then(() => sendResponse({ ok: true }))

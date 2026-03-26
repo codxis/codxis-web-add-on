@@ -25,33 +25,42 @@
   const jsFiles = isPDV ? FILE_MAP.pdv : FILE_MAP.index;
   const cssFiles = isPDV ? FILE_MAP.pdv_css : FILE_MAP.index_css;
 
-  // Lê arquivos atualizados do storage
-  let updatedFiles = {};
+  // Verifica se há arquivos atualizados no storage
+  let hasUpdatedFiles = false;
   try {
     const result = await chrome.storage.local.get(STORAGE_KEY_FILES);
-    updatedFiles = result[STORAGE_KEY_FILES] || {};
-    if (Object.keys(updatedFiles).length > 0) {
-      console.log(
-        "[DynamicLoader] Arquivos atualizados encontrados no storage.",
-      );
-    }
+    const updatedFiles = result[STORAGE_KEY_FILES] || {};
+    hasUpdatedFiles = Object.keys(updatedFiles).length > 0;
   } catch (err) {
     console.warn("[DynamicLoader] Erro ao ler storage:", err);
   }
 
-  // Injeta CSS
-  for (const filePath of cssFiles) {
-    await injectCSS(filePath, updatedFiles[filePath]);
+  if (hasUpdatedFiles) {
+    // Delega ao background script, que usa chrome.scripting (sem restrição de CSP)
+    console.log(
+      "[DynamicLoader] Arquivos atualizados encontrados, delegando ao background...",
+    );
+    chrome.runtime.sendMessage({
+      type: "INJECT_UPDATED_SCRIPTS",
+      jsFiles,
+      cssFiles,
+      tabId: null, // background descobre via sender
+    });
+  } else {
+    // Sem update: carrega arquivos empacotados normalmente via <script src>
+    console.log(
+      "[DynamicLoader] Sem atualização, carregando arquivos empacotados.",
+    );
+    for (const filePath of cssFiles) {
+      injectPackagedCSS(filePath);
+    }
+    for (const filePath of jsFiles) {
+      await injectPackagedJS(filePath);
+    }
   }
 
-  // Injeta JS no contexto do content script (mantém acesso ao chrome API)
-  for (const filePath of jsFiles) {
-    await injectJS(filePath, updatedFiles[filePath]);
-  }
+  console.log("[DynamicLoader] Inicialização concluída.");
 
-  console.log("[DynamicLoader] Carregamento concluído.");
-
-  // Escuta notificação de atualização
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "EXTENSION_UPDATED") {
       console.log("[DynamicLoader] Atualização aplicada, recarregando...");
@@ -60,57 +69,22 @@
   });
 })();
 
-async function injectJS(filePath, updatedContent) {
-  let code;
-
-  if (updatedContent) {
-    code = updatedContent;
-  } else {
-    // Lê o arquivo empacotado na extensão via fetch
-    try {
-      const url = chrome.runtime.getURL(filePath);
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      code = await response.text();
-    } catch (err) {
-      console.error(
-        "[DynamicLoader] Erro ao carregar arquivo empacotado:",
-        filePath,
-        err,
-      );
-      return;
-    }
-  }
-
-  // Executa no contexto do content script com new Function
-  // Isso mantém acesso ao chrome API e ao DOM, diferente de <script> tags
-  try {
-    const fn = new Function(code);
-    fn();
-  } catch (err) {
-    console.error("[DynamicLoader] Erro ao executar:", filePath, err);
-  }
+function injectPackagedCSS(filePath) {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = chrome.runtime.getURL(filePath);
+  (document.head || document.documentElement).appendChild(link);
 }
 
-async function injectCSS(filePath, updatedContent) {
-  let css;
-
-  if (updatedContent) {
-    css = updatedContent;
-  } else {
-    try {
-      const url = chrome.runtime.getURL(filePath);
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      css = await response.text();
-    } catch (err) {
-      console.error("[DynamicLoader] Erro ao carregar CSS:", filePath, err);
-      return;
-    }
-  }
-
-  const style = document.createElement("style");
-  style.setAttribute("data-source", filePath);
-  style.textContent = css;
-  (document.head || document.documentElement).appendChild(style);
+function injectPackagedJS(filePath) {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = chrome.runtime.getURL(filePath);
+    script.onload = resolve;
+    script.onerror = () => {
+      console.error("[DynamicLoader] Erro ao carregar:", filePath);
+      resolve();
+    };
+    (document.head || document.documentElement).appendChild(script);
+  });
 }
