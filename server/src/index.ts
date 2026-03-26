@@ -37,7 +37,7 @@ function getCurrentVersion(): string {
   // } catch {
   //   return "1.0.0";
   // }
-  return "1.0.4";
+  return "1.0.5";
 }
 
 // API Key simples — em produção use variável de ambiente
