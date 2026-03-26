@@ -1,7 +1,7 @@
 (async function initDynamicLoader() {
   const STORAGE_KEY_FILES = "updater_files";
 
-  const isPDV = window.location.href.includes("/nfce/emissao/pdv/");
+  const isPDV = window.location.href.includes("/nfce/emissao/pdv");
 
   const FILE_MAP = {
     pdv: [

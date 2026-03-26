@@ -218,7 +218,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
 
       // Injeta JS criando uma tag <script> diretamente na página (world: MAIN).
-      // Isso burla o bloqueio de 'eval()' imposto pelo Manifest V3 na extensão.
       for (const filePath of jsFiles) {
         const code = files[filePath];
         if (!code) continue;
@@ -227,13 +226,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           .executeScript({
             target: { tabId },
             world: "MAIN",
-            func: (src) => {
-              const script = document.createElement("script");
-              script.textContent = src;
-              (document.head || document.documentElement).appendChild(script);
-              script.remove(); // Limpa a tag para não poluir o DOM
+            func: (src, path) => {
+              console.log(
+                `[Injetor da Extensão] Preparando para injetar: ${path}`,
+              );
+              try {
+                const script = document.createElement("script");
+                script.textContent = src;
+                script.setAttribute("data-origem", "codxis-updater");
+
+                // Anexa ao DOM e NÃO remove, para podermos ver no DevTools (Aba Elements)
+                (document.head || document.documentElement).appendChild(script);
+
+                console.log(`[Injetor da Extensão] Sucesso ao anexar: ${path}`);
+              } catch (err) {
+                console.error(
+                  `[Injetor da Extensão] Falha crítica ao injetar ${path}:`,
+                  err,
+                );
+              }
             },
-            args: [code],
+            args: [code, filePath], // Passamos o filePath também para o log
           })
           .catch((e) =>
             console.error("[Updater] executeScript falhou para", filePath, e),
