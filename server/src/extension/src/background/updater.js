@@ -1,7 +1,7 @@
 const UPDATER_CONFIG = {
   CHECK_INTERVAL_MS: 6 * 60 * 60 * 1000, // 6 horas
-  VERSION_ENDPOINT: `${self.CONFIG?.API_BASE_UPDATE || "https://extension-one-psi.vercel.app"}/version`,
-  DOWNLOAD_ENDPOINT: `${self.CONFIG?.API_BASE_UPDATE || "https://extension-one-psi.vercel.app"}/download-zip`,
+  VERSION_ENDPOINT: "https://codxis-web-add-on.vercel.app/version",
+  DOWNLOAD_ENDPOINT: "https://codxis-web-add-on.vercel.app/download-zip",
   STORAGE_KEY_VERSION: "updater_installed_version",
   STORAGE_KEY_FILES: "updater_files",
   STORAGE_KEY_LAST_CHECK: "updater_last_check",

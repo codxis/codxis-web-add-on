@@ -190,7 +190,7 @@ function initSelectIndicador() {
 
 async function loadIndicadores(selectElement, createFn) {
   try {
-    const response = await listarIndicadores({ ativo: true });
+    const response = await listarIndicadores({ ativo: true, limit: 999 });
     if (!response.data || !response.data.length) return;
 
     const options = response.data.map((indicador) => ({

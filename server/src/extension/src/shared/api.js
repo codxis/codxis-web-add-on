@@ -42,6 +42,7 @@ async function listarIndicadores(filtros = {}) {
   if (filtros.limit) params.append("limit", filtros.limit);
 
   const query = params.toString();
+  console.log("[DEBUG] api.js - listarIndicadores:", query);
   return apiFetch(`/${query ? `?${query}` : ""}`);
 }
 
