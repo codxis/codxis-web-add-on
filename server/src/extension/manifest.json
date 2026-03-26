@@ -20,7 +20,7 @@
         "https://web.codxis.api.br/sistema/pages/privado/*"
       ],
       "js": ["src/background/dynamic-loader.js"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
 
