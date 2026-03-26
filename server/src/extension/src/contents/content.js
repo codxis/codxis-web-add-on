@@ -195,7 +195,9 @@ async function loadIndicadores(selectElement, createFn) {
 
     const options = response.data.map((indicador) => ({
       value: indicador.id,
-      label: indicador.apelido || indicador.nome,
+      label: indicador.apelido
+        ? `${indicador.nome} (${indicador.apelido})`
+        : indicador.nome,
     }));
 
     const newSelect = createFn({
