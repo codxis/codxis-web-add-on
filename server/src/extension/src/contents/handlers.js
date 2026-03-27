@@ -1,4 +1,83 @@
 const PONTOS_VALOR_REAIS = 0.5;
+const STORAGE_KEY_HIDE_PONTOS = CONFIG.STORAGE_KEY_HIDE_PONTOS;
+const STORAGE_KEY_CHECK_TIMESTAMP = CONFIG.STORAGE_KEY_CHECK_TIMESTAMP;
+const CHECK_INTERVAL_MS = CONFIG.CHECK_USER_INTERVAL_MS || 5000;
+
+function getStoredHidePontos() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY_HIDE_PONTOS);
+    return stored === "true";
+  } catch {
+    return false;
+  }
+}
+
+function setStoredHidePontos(value) {
+  try {
+    localStorage.setItem(STORAGE_KEY_HIDE_PONTOS, value.toString());
+    localStorage.setItem(STORAGE_KEY_CHECK_TIMESTAMP, Date.now().toString());
+  } catch {}
+}
+
+function getStoredCheckTimestamp() {
+  try {
+    return parseInt(
+      localStorage.getItem(STORAGE_KEY_CHECK_TIMESTAMP) || "0",
+      10,
+    );
+  } catch {
+    return 0;
+  }
+}
+
+function checkAndStoreUserType() {
+  const url = window.location.href;
+
+  // Verifica se está no domínio correto
+  if (!url.includes("web.codxis.api.br")) {
+    // Não está no domínio - não faz nada, mantém estado anterior
+    return getStoredHidePontos();
+  }
+
+  const typeUserElement = document.getElementById("type-user");
+  if (!typeUserElement || !typeUserElement.textContent) {
+    // Elemento não existe ainda - mantém último estado
+    return getStoredHidePontos();
+  }
+
+  // Normaliza e verifica
+  const normalizeText = (text) => {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  };
+
+  const userType = normalizeText(typeUserElement.textContent);
+  const shouldHide = CONFIG.USER_TYPES_HIDE_PONTOS.some((type) =>
+    userType.includes(normalizeText(type)),
+  );
+
+  setStoredHidePontos(shouldHide);
+  return shouldHide;
+}
+
+let userTypeCheckInitialized = false;
+
+function initUserTypeCheck() {
+  if (userTypeCheckInitialized) return;
+  userTypeCheckInitialized = true;
+
+  // Primeira verificação imediata
+  checkAndStoreUserType();
+
+  // Verificação periódica
+  setInterval(() => {
+    checkAndStoreUserType();
+  }, CHECK_INTERVAL_MS);
+}
 
 const indicadoresCache = {
   data: null,
@@ -51,6 +130,9 @@ function renderTabelaIndicadores(data) {
     return;
   }
 
+  // Usa localStorage em vez de chamar checkUserType() diretamente
+  const shouldHidePontos = getStoredHidePontos();
+
   tbody.innerHTML = data
     .map((indicador) => {
       const pontos = indicador.pontos || 0;
@@ -71,8 +153,14 @@ function renderTabelaIndicadores(data) {
             <button class="acoes-btn">⋯</button>
             <div class="acoes-menu">
               <button class="acao-item" data-action="editar">Editar</button>
-              <button class="acao-item" data-action="adicionar-pontos">Adicionar Pontos</button>
-              <button class="acao-item" data-action="resgatar-pontos">Resgatar Pontos</button>
+              ${
+                !shouldHidePontos
+                  ? `
+                  <button class="acao-item" data-action="adicionar-pontos">Adicionar Pontos</button>
+                  <button class="acao-item" data-action="resgatar-pontos">Resgatar Pontos</button>
+                `
+                  : ""
+              }
               <button class="acao-item acao-excluir" data-action="excluir">Excluir</button>
             </div>
           </div>
@@ -506,3 +594,6 @@ window.excluirIndicadorConfirm = excluirIndicadorConfirm;
 window.toggleAcoesDropdown = toggleAcoesDropdown;
 window.getFiltros = getFiltros;
 window.setupTabelaEventListeners = setupTabelaEventListeners;
+
+// Inicializar verificação de tipo de usuário
+initUserTypeCheck();
